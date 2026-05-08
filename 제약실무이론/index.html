@@ -294,8 +294,65 @@
 </div>
 
 <script>
-    // 제약실무이론 10-14강 기말고사 객관식 10문제 + OX 80문제 (총 90문제)
-    const practiceData = [
+    // 1. 기존: 제약실무이론 10-14강 (O/X 50문항)
+    const practiceData_10_14 = [
+        { guideline: "[제약실무이론 10-14강]", text: "EC50 값이 낮을수록 효능이 낮다는 것을 의미한다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "양성대조군이 없으면 IC50 실험은 정확하게 수행될 수 없다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "유효성 평가는 기존 치료제와 정성 지표로 비교하는 것이 가장 바람직하다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "세포 기반 평가에서는 분자타깃의 정보를 반드시 알아야 한다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "유효성 평가에서 outlier 데이터는 임의 제거하는 것이 바람직하다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "체내동태 평가는 약물의 효과나 독성과는 관련이 없다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "FcRn 결합은 단클론항체의 반감기 연장에 기여한다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "약물의 ADA 생성은 체내 노출 변화에 영향을 줄 수 있다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "Off-target screening은 약물의 부작용 예측에 도움을 줄 수 있다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "Glycosylation은 단백질 의약품의 대사 속도에 영향을 줄 수 있다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "독성은 개발 중 실패뿐 아니라 시판 후 철수 원인이 되기도 한다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "비표적 독성은 구조적으로 전혀 관련 없는 수용체와의 작용으로만 발생한다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "탐색적 독성평가는 초기 단계에 포함되어야 하며, 전 과정에 걸친 독성팀의 참여가 이상적이다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "hERG 채널 저해 평가는 심혈관계 독성 평가 항목 중 하나이다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "CYP450 효소 저해 여부는 약물상호작용 가능성 평가에 중요하다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "유전독성 예비평가는 mini Ames 시험을 통해 진행될 수 있다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "CNS 독성은 비임상과 임상 간 연계율이 매우 낮아 탐색적으로 무의미하다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "발생독성 평가는 탐색단계에서는 소규모로 실시되며, in vivo가 여전히 표준이다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "mini Ames 시험은 TA98, TA100 두 균주만 사용하며 약 90% 검출율을 가진다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "독성이 관찰되면 항상 개발을 중단해야 한다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "특허법은 기술의 공개와 독점을 교환함으로써 산업 발전을 유도하는 제도이다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "자연법칙을 단순히 발견하는 행위는 특허의 대상이 될 수 없다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "'책을 부채로 활용하는 것'은 유용한 용도 발명으로 성립될 수 있다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "실데나필은 최초에는 협심증 치료용으로 개발되었으나 발기부전 치료용 용도발명으로 특허를 받았다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "신규성은 발명이 출원 이전에 공개되지 않았음을 의미하며, 이는 논문같은 출판물에 해당하며, 인터넷 공개는 포함하지 않는다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "진보성은 기존 기술과 비교했을 때 구성의 곤란성과 효과의 현저성으로 평가된다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "물질특허는 약물 자체에 대한 권리로 가장 강력한 보호 수단이다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "특허권 존속기간 연장 제도는 최대 5년까지 연장이 가능하다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "특허 기간 연장으로 인해 복제약의 진입이 다소 지연될 수 있다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "물질특허가 만료되면 후속 특허가 있더라도 시장에서 보호받을 수 없다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "생물의약품은 반드시 박테리아나 균류에서만 제조된다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "대장균은 단백질의 번역 후 변형이 불가능하다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "에리스로포이에틴은 당화 구조가 생물학적 활성에 영향을 미친다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "단백질의약품의 역가 시험은 in vitro와 in vivo 방법 모두 사용될 수 있다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "CAR-T 치료제는 유전자 조작 T세포를 기반으로 한다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "항체약물접합체(ADC)는 기존 화학의약품에 비해 정상세포에도 독성이 높다는 부작용이 있다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "단백질의약품은 열에 매우 안정하므로 냉장 보관이 필요 없다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "CHO 세포는 인간과 유사한 당화가 가능하여 의약품 생산에 유리하다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "면역원성은 환자의 유전적 요인과 질환 상태에 따라 달라질 수 있다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "세포배양의약품은 일반적으로 세포 외로 단백질을 분비하지 않는다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "의약품의 품목허가 시, 품질에 관한 자료와 안전성·유효성에 관한 자료는 반드시 제출되어야 한다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "첨단바이오의약품은 장기추적조사를 할 필요가 없다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "의약품의 안전성·유효성 평가에서 임상시험만 고려되며 비임상시험은 고려되지 않는다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "CTD 제1부는 각국에서 동일하게 규정된 행정정보만 포함된다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "품질평가자료는 원료의약품에 대한 명칭, 제조공정, 불순물, 시험법 등을 포함하지 않는다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "임상시험자료는 GCP 기준을 준수한 시험 자료만 제출할 수 있다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "DMF는 제조공정과 품질관리 자료를 정부에 직접 제출하는 방식이다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "가교자료는 외국인의 임상자료를 한국인에게 적용하기 위한 보완 자료이다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[제약실무이론 10-14강]", text: "희귀의약품도 가교시험이 반드시 필요하다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[제약실무이론 10-14강]", text: "규제과학은 과학기술과 규제를 연계하여 규제 정책에 과학적 근거를 제공하는 학문이다.", options: ["True", "False"], answer: 0 }
+    ].map((q, index) => {
+        const cleanText = q.text.replace(/^\d+\.\s*/, '');
+        return { ...q, text: `${index + 1}. ${cleanText}` };
+    });
+
+    // 2. 신규: 2025 제약실무이론 5-1 기말 (객관식 10문항 + OX 80문항 = 총 90문항)
+    const practiceData_final = [
         { guideline: "[2025 기말]", text: "다음 중 유효성 평가의 목적에 해당하지 않는 것으로 가장 적절한 것은?", options: ["임상시험에서 마케팅 전략 수립", "기존 치료제와 다른 타깃에 작용하는 물질 탐색", "과학적 근거를 통한 효과 입증", "생물학적 제제를 포함한 평가", "실제 치료 효과를 나타내는 선도물질 발굴"], answer: 0 },
         { guideline: "[2025 기말]", text: "세포수준 유효성 평가에 관한 설명으로 가장 적절한 것을 고르시오", options: ["임상시험 대체법으로 직접 승인된다", "동물실험보다 전신적 반응을 더 잘 반영한다", "병리적 기전과 연계된 세포 기능 조절 물질 탐색이 가능하다", "세포 내 유전자 조작 기법이 활용되지 않는다", "항상 분자타깃이 명확해야 한다"], answer: 2 },
         { guideline: "[2025 기말]", text: "유전자치료제에 대한 설명 중 가장 적절하지 않은 것을 고르시오", options: ["체내동태 평가 시 생체 내 분포 평가가 중심이다", "표적 장기·비표적 장기·투여부위에서 유전물질 분석이 필요하다.", "qPCR, 디지털 PCR 등 핵산 증폭법을 이용한 유전물질 정량이 활용된다.", "유전자치료제에서는 ELISA, 면역조직화학(IHC), 웨스턴블롯팅 등의 방법은 거의 활용되지 않는다.", "도입 유전자의 발현 지속성 평가를 위하여 충분한 기간 시료 채취가 필요하다."], answer: 3 },
@@ -393,9 +450,14 @@
 
     const quizLibrary = [
         {
-            id: 'practice_midterm_2025',
-            title: '제약실무이론25 10-14강 퀴즈',
-            data: practiceData
+            id: 'practice_10_14',
+            title: '제약실무이론25 10-14강 퀴즈 (50문항)',
+            data: practiceData_10_14
+        },
+        {
+            id: 'practice_final_2025',
+            title: '2025 제약실무이론 5-1 기말 (90문항)',
+            data: practiceData_final
         }
     ];
 
