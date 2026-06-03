@@ -294,7 +294,7 @@
 </div>
 
 <script>
-    // 1. 기존: 제약실무이론 10-14강 (O/X 50문항)
+    // 기존 데이터 1
     const practiceData_10_14 = [
         { guideline: "[제약실무이론 10-14강]", text: "EC50 값이 낮을수록 효능이 낮다는 것을 의미한다.", options: ["True", "False"], answer: 1 },
         { guideline: "[제약실무이론 10-14강]", text: "양성대조군이 없으면 IC50 실험은 정확하게 수행될 수 없다.", options: ["True", "False"], answer: 0 },
@@ -351,7 +351,7 @@
         return { ...q, text: `${index + 1}. ${cleanText}` };
     });
 
-    // 2. 신규: 2025 제약실무이론 5-1 기말 (객관식 10문항 + OX 80문항 = 총 90문항)
+    // 기존 데이터 2
     const practiceData_final = [
         { guideline: "[2025 기말]", text: "다음 중 유효성 평가의 목적에 해당하지 않는 것으로 가장 적절한 것은?", options: ["임상시험에서 마케팅 전략 수립", "기존 치료제와 다른 타깃에 작용하는 물질 탐색", "과학적 근거를 통한 효과 입증", "생물학적 제제를 포함한 평가", "실제 치료 효과를 나타내는 선도물질 발굴"], answer: 0 },
         { guideline: "[2025 기말]", text: "세포수준 유효성 평가에 관한 설명으로 가장 적절한 것을 고르시오", options: ["임상시험 대체법으로 직접 승인된다", "동물실험보다 전신적 반응을 더 잘 반영한다", "병리적 기전과 연계된 세포 기능 조절 물질 탐색이 가능하다", "세포 내 유전자 조작 기법이 활용되지 않는다", "항상 분자타깃이 명확해야 한다"], answer: 2 },
@@ -448,16 +448,107 @@
         return { ...q, text: `${index + 1}. ${cleanText}` };
     });
 
+    // ★ 새롭게 추가: 2026 제약실무이론 5-1 중간 (O/X 문제만) (총 60문항)
+    const rawMidterm2026OX = [
+        { text: "타깃 규명은 특정 타깃이 질병 표현형에서 의미있는 약효를 나타내는지 확인하는 과정이다.", options: ["True", "False"], answer: 1 },
+        { text: "개량신약은 제네릭에 비하여 더 높은 개발비용과 성공률을 가진다.", options: ["True", "False"], answer: 1 },
+        { text: "신약개발에 들어가는 연구개발 비용이 점차 감소함에 따라 FIPCO 보다는 분업화 모델이 새로운 대안으로 대두되고 있다.", options: ["True", "False"], answer: 1 },
+        { text: "mRNA 수준의 타깃 검증에서는 siRNA나 antisense oligonucleotide 등을 활용할 수 있다.", options: ["True", "False"], answer: 0 },
+        { text: "집중화 라이브러리는 새로운 구조를 발굴하는 데 유리한 방식이다.", options: ["True", "False"], answer: 1 },
+        { text: "질환과 관련된 모든 타깃이 실제 약물 타깃으로 활용될 수 있다.", options: ["True", "False"], answer: 1 },
+        { text: "약물 타깃의 구조는 저분자 화합물과의 결합을 통해 구조적 변화를 일으킬 수 있으며, 이러한 변화는 일반적으로 비가역적이다.", options: ["True", "False"], answer: 1 },
+        { text: "약물화 가능 타깃은 저분자 화합물이나 생물학적 제제가 결합할 수 있고, 측정 가능한 생물학적 반응을 보여야 한다.", options: ["True", "False"], answer: 0 },
+        { text: "Aducanumab(Aduhelm) 은 시스템 접근법을 적용하여 개발된 대표적인 약물이다.", options: ["True", "False"], answer: 0 },
+        { text: "Hydrophobic tagging은 PROTAC 약물의 주요 기술이다.", options: ["True", "False"], answer: 1 },
+        { text: "표현형 기반 신약 개발에서는 화합물의 타깃을 규명하는 과정이 필요 없어 시간 절약이 가능하다.", options: ["True", "False"], answer: 1 },
+        { text: "Hit-to-Lead 단계에서는 활성 및 선택성 최적화보다 Drug-like 특성 최적화에 중점을 두어 개발을 수행하는 것이 바람직하다.", options: ["True", "False"], answer: 1 },
+        { text: "지나치게 높은 선택성을 가진 약물은 경우에 따라 생체 항상성을 교란할 가능성이 있다.", options: ["True", "False"], answer: 0 },
+        { text: "타깃 구조 기반 접근법에서는 유사한 결합 부위를 갖는 단백질을 탐색하여 새로운 적응증 가능성을 살필 수 있다.", options: ["True", "False"], answer: 0 },
+        { text: "HTS 에서 타깃 기반 검색은 작용 기전이 비교적 명확하다는 장점이 있다.", options: ["True", "False"], answer: 0 },
+        { text: "CTD에서 비임상시험 자료는 모듈 3에 포함된다.", options: ["True", "False"], answer: 1 },
+        { text: "중개연구는 전임상에서 얻은 정보와 데이터를 다시 임상 단계에 활용하는 연구개발 접근이다.", options: ["True", "False"], answer: 1 },
+        { text: "TMP는 STP와 TPP 설정에 큰 영향을 주지 않는다.", options: ["True", "False"], answer: 1 },
+        { text: "FBDD 를 위한 타깃 준비 과정에서는 결정 구조가 알려져 있고 결합 또는 기능에 대한 테스트가 가능한 타깃만을 선정할 수 있다.", options: ["True", "False"], answer: 1 },
+        { text: "NRDO는 자체 기초연구보다 도입한 파이프라인의 개발과 가치 향상에 초점을 두는 사업 모델이다.", options: ["True", "False"], answer: 0 },
+        { text: "리간드 기반 가상검색은 알려진 활성물질 정보가 없는 경우 유용하게 활용될 수 있는 방법이다.", options: ["True", "False"], answer: 1 },
+        { text: "신규 약물 타깃 선정 단계에서 임상적 필요성, 상업적 가치, 그리고 druggability를 함께 고려해야 한다.", options: ["True", "False"], answer: 0 },
+        { text: "First-in-class 약물의 대표적인 성공 사례로 Tamiflu 가 있다.", options: ["True", "False"], answer: 1 },
+        { text: "임상 1상 시험은 일반적으로 환자를 대상으로 안전성과 약동학적 특성을 평가하는 단계이다.", options: ["True", "False"], answer: 1 },
+        { text: "HTS와 비교할때, 조각기반 스크리닝에서는 친수성 조각이 많이 발견되는 경향이 있다.", options: ["True", "False"], answer: 0 },
+        { text: "천연물 신약은 저분자 화합물의 혼합물로 구성되며, 일반적으로 신규화합물(NCE) 범주에 포함된다.", options: ["True", "False"], answer: 0 },
+        { text: "표현형 기반 검색은 특정 효소나 수용체 등 단일 단백질을 대상으로 assay를 구성하여 평가한다.", options: ["True", "False"], answer: 1 },
+        { text: "신약개발 TPP 요소에서, 치료 영역, 투여 경로, 약물 작용 기전 등은 제품 관련 요소로 분류된다.", options: ["True", "False"], answer: 1 },
+        { text: "기존 Long Read Sequencing 기술에서 최근 Short Read Sequencing 기술로의 발전으로 인해 더 정확한 유전체 분석이 가능해지고 있다.", options: ["True", "False"], answer: 1 },
+        { text: "분자적 접근법은 주로 유전체학, 단백질체학, 유전적 연관성 분석, 역유전학 등의 연구 방법을 이용한다.", options: ["True", "False"], answer: 0 },
+        { text: "미국 FDA에서는 일반적으로 NCE는 NDA, NBE는 BLA 절차와 연결된다.", options: ["True", "False"], answer: 0 },
+        { text: "세포·유전자 치료제는 환자 맞춤형 의약품 형태로 개발되는 특징을 가질 수 있다.", options: ["True", "False"], answer: 0 },
+        { text: "허가, 심사 관점에서 개량신약은 신약에 해당한다.", options: ["True", "False"], answer: 1 },
+        { text: "Follow-on 약물은 항상 기존 first-in-class 약물과 구조적으로 거의 동일해야 한다.", options: ["True", "False"], answer: 1 },
+        { text: "GMP는 의약품의 안전성과 유효성을 사후에 규명하고 제어하는 제도이다.", options: ["True", "False"], answer: 1 },
+        { text: "ADME 및 독성예측프로그램을 이용해 필터링을 진행하여 선별한 화합물 데이터베이스를 사용할 경우 가상검색 이후에 후속 필터링이 필요하지 않다.", options: ["True", "False"], answer: 1 },
+        { text: "제약산업의 아웃소싱 확대는 비용 절감, 분업화, 전문화를 촉진하는 의미를 가진다.", options: ["True", "False"], answer: 0 },
+        { text: "CRO는 신약 개발 과정에서 비임상 또는 임상시험을 위탁받아 수행하는 기관이다.", options: ["True", "False"], answer: 0 },
+        { text: "PROTAC은 촉매적으로 작용할 수 있어 한 분자가 여러 표적 단백질 분해를 반복적으로 유도할 수 있다.", options: ["True", "False"], answer: 0 },
+        { text: "TPP 는 후보물질 발굴 단계 이전에 완성하여, Hit-to-Lead 및 후보물질 단계에서 일관된 수준으로 작동해야한다.", options: ["True", "False"], answer: 1 },
+        { text: "제형설계와 전달시스템 개발은 의약품개발과정에서 중요한 요소로 작용한다.", options: ["True", "False"], answer: 0 },
+        { text: "HTS에서 사용하는 라이브러리는 화합물만 포함할 수 있으며 siRNA나 cDNA는 포함될 수 없다.", options: ["True", "False"], answer: 1 },
+        { text: "TMP에서 말하는 시장은 단순 판매 규모만이 아니라 적응증과 관련된 여러 요소를 포함한다.", options: ["True", "False"], answer: 0 },
+        { text: "HTS에서 약효 신호는 이미지 기반 분석으로 평가할 수 있다.", options: ["True", "False"], answer: 0 },
+        { text: "의약품 개발은 TPP를 충족할 수 있도록 안전성, 유효성, 품질에 대한 근거자료를 축적해 가는 과정으로 이해할 수 있다.", options: ["True", "False"], answer: 0 },
+        { text: "환자 수의 부족, 임상시험 수행의 어려움 등으로 인해 희귀의약품의 연구개발은 점점 감소하고 있다.", options: ["True", "False"], answer: 1 },
+        { text: "일반적으로 품질 자료는 의약품 개발 단계에서 임상 진입 이후 준비하는 것이 바람직하다.", options: ["True", "False"], answer: 1 },
+        { text: "이벤트 기반 약리는 표적 단백질에 지속적으로 붙어 있어야만 효과를 내는 개념이다.", options: ["True", "False"], answer: 1 },
+        { text: "Best-in-class 약물은 기존 약물 생산에 문제가 생겼을 때 대체제로 활용될 수 있는 장점이 있다.", options: ["True", "False"], answer: 0 },
+        { text: "머신러닝 기반 신약개발에서는 과거 QSAR류 모델이 활용되었고, 최근에는 더 다양한 구조 정보와 딥러닝 기법이 결합되고 있다.", options: ["True", "False"], answer: 0 },
+        { text: "CYP 효소 저해활성 평가는 후보 화합물이 병용 약물 대사에 영향을 줄 가능성을 예측하는 데 중요하다.", options: ["True", "False"], answer: 0 },
+        { text: "바이오베터는 독점적 특허권을 확보할 수 있다.", options: ["True", "False"], answer: 0 },
+        { text: "항체와 PROTAC은 세포 내 단백질을 표적할 수 있다는 장점이 있다.", options: ["True", "False"], answer: 1 },
+        { text: "약물 타깃은 일반적으로 외부 자극에 의해 활성이 변화될 수 있는 단백질이나 핵산과 같은 생체 고분자를 의미한다.", options: ["True", "False"], answer: 0 },
+        { text: "신약 심사 및 허가 절차는 의약품의 종류에 따라서 다른 절차가 적용될 수 있다.", options: ["True", "False"], answer: 0 },
+        { text: "임상단계 이후 원료의약품과 완제의약품의 생산은 GMP 기준에 따라 수행되어야 한다.", options: ["True", "False"], answer: 0 },
+        { text: "Drug-like 특성은 후보물질 도출 단계에서부터 고려하는 것이 효율적인 약물 개발에 유리하다.", options: ["True", "False"], answer: 1 },
+        { text: "Gabapentin enacarbil 은 제형 변경에 의한 개량 신약의 대표적인 사례이다.", options: ["True", "False"], answer: 1 },
+        { text: "TPD는 세포 내 단백질 분해 시스템을 활용해 특정 단백질을 선택적으로 제거하는 전략이다.", options: ["True", "False"], answer: 0 },
+        { text: "FBDD 에서 조각 스크리닝 과정에서 NMR, SPR, X-ray 결정학 등의 방법이 널리 사용된다.", options: ["True", "False"], answer: 0 }
+    ].map((q, index) => {
+        return { guideline: "[2026 제약실무이론 5-1 중간]", text: `${index + 1}. ${q.text}`, options: q.options, answer: q.answer };
+    });
+
     const quizLibrary = [
         {
-            id: 'practice_10_14',
-            title: '제약실무이론25 10-14강 퀴즈 (50문항)',
-            data: practiceData_10_14
+            id: 'past_2022_2024',
+            title: '2022-2024 약물치료학2 5-1 중간 (통합 족보)',
+            data: combined22_24
         },
         {
-            id: 'practice_final_2025',
-            title: '2025 제약실무이론 5-1 기말 (90문항)',
-            data: practiceData_final
+            id: 'midterm_2025_lipid_included',
+            title: '2025년 약물치료학2 5-1 중간 (2026 대비 VTE 제외, CV 퀴즈 지질 포함)',
+            data: midterm2025_with_lipid
+        },
+        {
+            id: 'midterm_2025_revised',
+            title: '2025년 약물치료학2 5-1 중간 (2026 대비 VTE 제외)',
+            data: midterm2025_revised
+        },
+        {
+            id: 'midterm_2025',
+            title: '2025 약물치료학2 5-1 중간 (전체 문항)',
+            data: midterm2025
+        },
+        {
+            id: 'cv_2024_revised',
+            title: '2024 약물치료학2 CV 퀴즈 (2026 CV 대비 지질 제외)',
+            data: refinedData2026
+        },
+        {
+            id: 'cv_2024',
+            title: '2024 약물치료학2 CV 퀴즈',
+            data: masterData2024
+        },
+        {
+            id: 'midterm_2026_ox',
+            title: '2026 제약실무이론 5-1 중간 (O/X 문제만)',
+            data: rawMidterm2026OX
         }
     ];
 
@@ -708,6 +799,7 @@
         document.getElementById('retry-incorrect-btn').style.display = score === activeQuizData.length ? 'none' : 'inline-block';
     }
 
+    // 초기 화면(대시보드) 자동 실행
     showDashboard();
 </script>
 </body>
