@@ -294,7 +294,7 @@
 </div>
 
 <script>
-    // 기존 데이터 1
+    // 1. 기존: 제약실무이론 10-14강 (O/X 50문항)
     const practiceData_10_14 = [
         { guideline: "[제약실무이론 10-14강]", text: "EC50 값이 낮을수록 효능이 낮다는 것을 의미한다.", options: ["True", "False"], answer: 1 },
         { guideline: "[제약실무이론 10-14강]", text: "양성대조군이 없으면 IC50 실험은 정확하게 수행될 수 없다.", options: ["True", "False"], answer: 0 },
@@ -351,7 +351,7 @@
         return { ...q, text: `${index + 1}. ${cleanText}` };
     });
 
-    // 기존 데이터 2
+    // 2. 기존: 2025 제약실무이론 5-1 기말 (객관식 10문항 + OX 80문항 = 총 90문항)
     const practiceData_final = [
         { guideline: "[2025 기말]", text: "다음 중 유효성 평가의 목적에 해당하지 않는 것으로 가장 적절한 것은?", options: ["임상시험에서 마케팅 전략 수립", "기존 치료제와 다른 타깃에 작용하는 물질 탐색", "과학적 근거를 통한 효과 입증", "생물학적 제제를 포함한 평가", "실제 치료 효과를 나타내는 선도물질 발굴"], answer: 0 },
         { guideline: "[2025 기말]", text: "세포수준 유효성 평가에 관한 설명으로 가장 적절한 것을 고르시오", options: ["임상시험 대체법으로 직접 승인된다", "동물실험보다 전신적 반응을 더 잘 반영한다", "병리적 기전과 연계된 세포 기능 조절 물질 탐색이 가능하다", "세포 내 유전자 조작 기법이 활용되지 않는다", "항상 분자타깃이 명확해야 한다"], answer: 2 },
@@ -448,7 +448,7 @@
         return { ...q, text: `${index + 1}. ${cleanText}` };
     });
 
-    // ★ 새롭게 추가: 2026 제약실무이론 5-1 중간 (O/X 문제만) (총 60문항)
+    // 3. ★ 새롭게 추가: 2026 제약실무이론 5-1 중간 (O/X 문제만) (총 60문항)
     const rawMidterm2026OX = [
         { text: "타깃 규명은 특정 타깃이 질병 표현형에서 의미있는 약효를 나타내는지 확인하는 과정이다.", options: ["True", "False"], answer: 1 },
         { text: "개량신약은 제네릭에 비하여 더 높은 개발비용과 성공률을 가진다.", options: ["True", "False"], answer: 1 },
@@ -516,39 +516,19 @@
 
     const quizLibrary = [
         {
-            id: 'past_2022_2024',
-            title: '2022-2024 약물치료학2 5-1 중간 (통합 족보)',
-            data: combined22_24
+            id: 'practice_10_14',
+            title: '제약실무이론25 10-14강 퀴즈 (50문항)',
+            data: practiceData_10_14
         },
         {
-            id: 'midterm_2025_lipid_included',
-            title: '2025년 약물치료학2 5-1 중간 (2026 대비 VTE 제외, CV 퀴즈 지질 포함)',
-            data: midterm2025_with_lipid
-        },
-        {
-            id: 'midterm_2025_revised',
-            title: '2025년 약물치료학2 5-1 중간 (2026 대비 VTE 제외)',
-            data: midterm2025_revised
-        },
-        {
-            id: 'midterm_2025',
-            title: '2025 약물치료학2 5-1 중간 (전체 문항)',
-            data: midterm2025
-        },
-        {
-            id: 'cv_2024_revised',
-            title: '2024 약물치료학2 CV 퀴즈 (2026 CV 대비 지질 제외)',
-            data: refinedData2026
-        },
-        {
-            id: 'cv_2024',
-            title: '2024 약물치료학2 CV 퀴즈',
-            data: masterData2024
+            id: 'practice_final_2025',
+            title: '2025 제약실무이론 5-1 기말 (90문항)',
+            data: practiceData_final
         },
         {
             id: 'midterm_2026_ox',
             title: '2026 제약실무이론 5-1 중간 (O/X 문제만)',
-            data: rawMidterm2026OX
+            data: midterm2026OX
         }
     ];
 
