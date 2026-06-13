@@ -444,7 +444,7 @@
         { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 폐렴에 이환되었을 가능성이 있는 성인에서 외래치료 시 1차 선택약으로 권고되는 항생제는?", options: ["Amoxicillin-clavulanate", "Cefditoren", "Cefpodoxime", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
         { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 폐렴에 이환되었을 가능성이 있는 성인에서 외래치료 시 B-lactam + macrolide는 ( )에 의한 폐렴이 의심되는 경우에 한해 권고한다.", options: ["그람양성균", "그람음성균", "비정형균", "혐기성균"], answer: 2 },
         { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 폐렴에 이환되었을 가능성이 있는 성인에서 적정 항생제 치료 기간은 적어도 ( ) 이상 투여하며, 폐렴 원인, 환자 상태, 항생제의 종류, 치료에 대한 반응, 동반 질환 및 폐렴 합병증 유무에 따라 달라진다.", options: ["3일", "5일", "10일", "15일"], answer: 1 },
-        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text "( )은 MRSA에 의한 연조직 감염이나 균혈증에는 효과적이지만 폐의 표면활성제에 의해서 효과가 감소할 수 있어 폐렴에서는 권장되지 않는다.", options: ["Daptomycin", "Linezolid", "Teicoplanin", "Vancomycin"], answer: 0 },
+        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "( )은 MRSA에 의한 연조직 감염이나 균혈증에는 효과적이지만 폐의 표면활성제에 의해서 효과가 감소할 수 있어 폐렴에서는 권장되지 않는다.", options: ["Daptomycin", "Linezolid", "Teicoplanin", "Vancomycin"], answer: 0 },
         { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 폐렴으로 저산소증이 동반된 환자에서 산소요법으로 산소포화도 ( )%를 유지한다.", options: ["64-68", "74-78", "84-88", "94-98"], answer: 3 },
         { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 methicillin-resistant S. aureus 폐렴이 의심되는 경우는 사용할 수 있는 항균제는?", options: ["linezolid", "teicoplanin", "vancomycin", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
         { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "심한 penicillin 이상반응 등으로 인해 B-lactam 사용이 어려운 환자에게 사용할 수 있는 respiratory fluoroquinolone은?", options: ["ciprofloxacin", "levofloxacin", "moxifloxacin", "1,2", "2,3", "1,3", "1,2,3"], answer: 4 },
@@ -489,109 +489,6 @@
         const cleanText = q.text.replace(/^\d+\.\s*/, '');
         return { ...q, text: `${index + 1}. ${cleanText}` };
     });
-
-    // ★ 새롭게 추가: 2026 약물치료학2 5-1 케이스 스터디 (31문항)
-    const caseStudyData2026 = [
-        { guideline: "[Chapter 43: Arrhythmias]", text: "A 57 year old hospitalized patient develops atrial fibrillation (AF) with a rapid ventricular response (heart rate [HR] = 179 bpm). Past medical history is significant for hypertension, angina, and thyrotoxicosis. Symptoms include fatigue and palpitations. Which of the following intravenous medications do you recommend as INITIAL management of the patient’s atrial fibrillation?", options: ["Digoxin to control his ventricular rate", "Esmolol to control his ventricular rate", "Ibutilide to restore sinus rhythm", "Amiodarone to restore sinus rhythm"], answer: 1 },
-        { guideline: "[Chapter 43: Arrhythmias]", text: "A 19-year-old female with a history of Wolff-Parkinson-White (WPW) syndrome is seen in the ED. No other medical problems nor known heart disease is present. ECG shows atrial fibrillation (HR = 178 beats/min). The patient is hemodynamically stable. Which is the best intravenous medication to administer at this time?", options: ["Adenosine", "Verapamil", "Procainamide", "Lidocaine"], answer: 2 },
-        { guideline: "[Chapter 43: Arrhythmias]", text: "A 54-year-old man with a past medical history of asthma and migraines presents to the clinic complaining of dizziness and palpitations that have been occurring for the past 2 to 3 days. An ECG reveals that he is in atrial fibrillation (HR = 90 beats/min). Which option would be the most appropriate stroke prevention strategy for this patient?", options: ["Aspirin", "Apixaban", "Clopidogrel", "No antithrombotic therapy is needed"], answer: 3 },
-        { guideline: "[Chapter 43: Arrhythmias]", text: "A 65-year-old man has a history of MI (6 months ago; current LVEF = 25% [0.25]) and recurrent ventricular tachycardia. During an electrophysiologic study, the patient experienced inducible ventricular tachycardia (HR = 240 beats/min), causing syncope. Which is the best treatment option for this patient’s arrhythmia?", options: ["Radiofrequency ablation of the accessory pathway", "Implantable cardioverter-defibrillator", "Initiate amiodarone therapy", "Increase the patient’s β blocker to the max dose"], answer: 1 },
-        { guideline: "[Chapter 43: Arrhythmias]", text: "A 78-year-old female is referred to the electrophysiology clinic by their primary care doctor for atrial fibrillation. Past medical history is significant for hypertension, asthma, and diabetes. The patient denies dizziness, fatigue, shortness of breath, palpitations, or chest pain. ECG demonstrates atrial fibrillation, HR 110 beats/min, QTc 465 ms, QRS 122 ms. What would be the best treatment option for this patient?", options: ["Diltiazem", "Flecainide", "Sotalol", "Amiodarone"], answer: 0 },
-        { guideline: "[Chapter 42: Stroke]", text: "ST is a 68-year-old woman who presented with an ischemic stroke 2 days ago. The patient received alteplase and the neurological deficits improved. Prior to the stroke, the patient was taking no medications. The patient is allergic to aspirin (hives and shortness of breath). Which of the following agents should ST receive to prevent recurrent strokes?", options: ["Aspirin", "Clopidogrel", "Clopidogrel plus aspirin", "Extended-release dipyridamole plus aspirin"], answer: 1 },
-        { guideline: "[Chapter 42: Stroke]", text: "FR is a 58-year-old man who has had atrial fibrillation for 5 years. The patient was maintained on aspirin 325 mg daily. Four days ago, the patient sustained an ischemic stroke. What is the best choice of therapy for FR to prevent recurrent stroke?", options: ["Aspirin", "Clopidogrel", "Extended-release dipyridamole plus aspirin", "Rivaroxaban"], answer: 3 },
-        { guideline: "[Chapter 42: Stroke]", text: "JC is a 79-year-old 150 kg (331 lb) man who recently sustained an ischemic stroke. During the workup, the patient was found to have atrial fibrillation. Blood pressure is 145/90 mm Hg. Serum creatinine is 4.5 mg/dL (398 µmol/L) (creatinine clearance 28 mL/min [0.47 mL/s]) and BMI is 50 kg/m2. Which of the following oral anticoagulants is most appropriate for JC?", options: ["Apixaban 5 mg daily", "Edoxaban 30 mg daily", "Dabigatran 150 mg twice daily", "Warfarin adjusted to a target INR of 2 to 3"], answer: 3 },
-        { guideline: "[Chapter 42: Stroke]", text: "RG is a 74-year-old man who is being discharged from the hospital after a mild stroke. Blood pressure has stabilized at 156/98 mm Hg. Low-density lipoprotein cholesterol is 110 mg/dL (2.84 mmol/L). On which of the following regimens should RG be placed?", options: ["Atorvastatin 40 mg daily", "Hydrochlorothiazide 25 mg daily plus rosuvastatin 20 mg daily", "Lisinopril 5 mg daily", "Lovastatin 40 mg daily plus losartan 50 mg daily"], answer: 1 },
-        { guideline: "[Chapter 41: Venous Thromboembolism]", text: "XT is a 55-year-old male (height = 63 in. [160 cm], weight = 80 kg) who presents to the Emergency Department (ED) and is diagnosed with a new unprovoked left lower extremity deep vein thrombosis (DVT) and pulmonary embolism (PE). The patient has no significant past medical history and takes no other medications. All baseline labs are within normal limits and the patient is hemodynamically stable. Which of the following is the best initial treatment regimen for XT upon discharge from the ED?", options: ["Enoxaparin 80 mg subcutaneously every 12 hours × 5 days + edoxaban 60 mg PO daily", "Enoxaparin 80 mg subcutaneously every 12 hours × 5 days then edoxaban 60 mg PO daily", "Enoxaparin 120 mg subcutaneously × 5 days + warfarin 5 mg PO daily", "Enoxaparin 120 mg subcutaneously daily × 5 days then warfarin 5 mg PO daily"], answer: 1 },
-        { guideline: "[Chapter 135: Upper Respiratory Tract Infections]", text: "Which of the following is considered a first-line recommendation for the treatment of a patient presenting with a 2-week history of persistent nasal congestion and sinus pain? The patient reports receiving 10 days of clindamycin when he was hospitalized for a skin abscess 2 months ago.", options: ["Amoxicillin-clavulanate", "Clarithromycin", "Levofloxacin", "Amoxicillin"], answer: 0 },
-        { guideline: "[Chapter 134: Lower Respiratory Tract Infections]", text: "A 26-year-old patient with diabetes presents in the emergency department with community-acquired pneumonia. The patient is alert and oriented ×3 (person, place, time). Vitals include BP 120/70, RR 31 breaths/min, HR 116 beats/min, O2 saturation 90% (0.9) on room air, and temperaturemax 101.9°F (38.8°C). Laboratory results include: WBC 12,000 cells/mm3 (12 × 109/L), remaining CBC unremarkable, Na+ 135 mEq/L (mmol/L), K+ 4.2 mEq/L (mmol/L), Cl- 105 mEq/L (mmol/L), CO2 25 mEq/L (mmol/L), BUN 33 mg/dL (11.8 mmol/L urea), and creatinine 1.3 mg/dL (115 µmol/L). What is the most appropriate empiric therapy for the patient?", options: ["Ciprofloxacin + azithromycin", "Ceftaroline", "Moxifloxacin", "Linezolid + aztreonam"], answer: 2 },
-        { guideline: "[Chapter 134: Lower Respiratory Tract Infections]", text: "A 40-year-old patient was directly admitted to the ICU for intubation secondary to a motor vehicle accident. After 5 days of hospitalization, the patient developed opacities on chest x-ray, a fever, WBC elevations, and possible septic shock. Local antimicrobial susceptibility rates are not available. Which of the following empiric regimens would be most appropriate?", options: ["Piperacillin/tazobactam + vancomycin", "Levofloxacin + aztreonam", "Cefepime + ciprofloxacin + linezolid", "Ceftaroline + tobramycin"], answer: 2 },
-        { guideline: "[Chapter 134: Lower Respiratory Tract Infections]", text: "A patient with NKDA and normal renal/hepatic function who was recently hospitalized for a stroke last month is readmitted for possible heart failure complications (no antibiotics was given). On day 7 of hospitalization, the primary team thinks the patient has developed hospital-acquired pneumonia (HAP), and nares screening is positive for MRSA. They are not at high risk for mortality. The MRSA rates of the hospital’s stroke unit (floor) is less than 5%. Which of the following empiric regimens would be most appropriate?", options: ["Aztreonam + daptomycin", "Levofloxacin monotherapy", "Cefepime + vancomycin", "Meropenem monotherapy"], answer: 2 },
-        { guideline: "[Chapter 136: Influenza]", text: "A 21-year-old, otherwise healthy college student presents to clinic with history of 4 days of fever, myalgia, dry cough, and malaise. She is diagnosed with influenza A infection. What would be the most appropriate recommendation for her?", options: ["Oseltamivir 75 mg once daily for 5 days", "Maintenance of fluid intake, warm tea, and cough lozenges", "Oseltamivir 75 mg plus rimantadine 100 mg twice daily for 5 days", "Zanamivir 10 mg twice daily for 5 days plus maintenance of fluid intake, warm tea, and cough lozenges"], answer: 1 },
-        { guideline: "[Chapter 144: Urinary Tract Infections]", text: "A 20-year-old female is diagnosed with uncomplicated cystitis. She has no known drug allergies. Based on the 2010 IDSA Guidelines, which of the following regimens would be the most appropriate treatment for this patient?", options: ["Ciprofloxacin 500 mg orally twice daily for 3 days", "Nitrofurantoin 100 mg orally twice daily for 5 days", "Amoxicillin 500 mg orally four times daily for 3 days", "Trimethoprim–sulfamethoxazole double strength, 1 tablet orally, 1 dose"], answer: 1 },
-        { guideline: "[Chapter 144: Urinary Tract Infections]", text: "A 50-year-old female is admitted to the ICU with severe pyelonephritis. She has a history of anaphylaxis with penicillin. What would be the most appropriate empiric treatment?", options: ["Trimethoprim-sulfamethoxazole double strength, 1 tablet orally twice daily for 3 days", "Nitrofurantoin 100 mg orally twice daily for 7 days", "Ciprofloxacin 400 mg IV twice daily for 3 days, followed by 500 mg orally twice daily for 11 days", "Piperacillin/tazobactam 3.375 g IV q6 hours × 14 days"], answer: 2 },
-        { guideline: "[Chapter 144: Urinary Tract Infections]", text: "A 34-year-old female is diagnosed with her third incidence of uncomplicated cystitis in the last 18 months. The trimethoprim-sulfamethoxazole resistance rate for E. coli is 10% in the community. Her last prescription filled was TMP/SMX and was completed 30 days ago. Which of the following would be the best choice treatment of an uncomplicated UTI for this patient?", options: ["Trimethoprim-sulfamethoxazole double strength, one tablet orally twice daily for 3 days", "Amoxicillin 500 mg orally twice daily for 5 days", "Fosfomycin 3 g orally daily for 3 days", "Ciprofloxacin 500 mg orally twice daily for 5 days"], answer: 0 },
-        { guideline: "[Chapter 144: Urinary Tract Infections]", text: "A 54-year-old man is diagnosed with acute bacterial prostatitis for the first time. He is an otherwise healthy male with a documented allergy to trimethoprim-sulfamethoxazole. Which of the following is the most appropriate therapy for this patient?", options: ["Ciprofloxacin 500 mg orally twice daily for 3 days", "Trimethoprim-sulfamethoxazole double strength, one tablet orally twice daily for 4 weeks", "Ciprofloxacin 500 mg orally twice daily for 4 weeks", "Nitrofurantoin 100 mg orally twice daily for 5 days"], answer: 2 },
-        { guideline: "[Chapter 140: Tuberculosis]", text: "A 55-year-old male is undergoing treatment for active tuberculosis with rifampin, isoniazid, pyrazinamide, and ethambutol. He presents with nausea, jaundice, and elevated liver enzymes. Which drug is most likely responsible for his symptoms?", options: ["Rifampin", "Isoniazid", "Pyrazinamide", "Ethambutol"], answer: 2 },
-        { guideline: "[Chapter 140: Tuberculosis]", text: "An otherwise healthy 29-year-old Asian female with active TB has been improving symptomatically after 6 weeks of antituberculosis medications (rifampin, isoniazid, pyrazinamide, and ethambutol). However, for the past 2 weeks, she has noticed trouble reading phone numbers in the phonebook, and has had trouble reading the newspaper. On examination, her visual acuity and red/green perception are diminished. The most likely diagnosis is:", options: ["Ethambutol-associated optic neuritis", "Isoniazid-induced hepatitis", "Macular degeneration", "TB dissemination to her eyes"], answer: 0 },
-        { guideline: "[Chapter 140: Tuberculosis]", text: "BC is a 36-year-old patient severely immunocompromised with human immunodeficiency virus (HIV) and TB coinfection. Which of the following is the most appropriate treatment approach in this patient?", options: ["Defer antiretroviral therapy until after TB treatment.", "Start antiretroviral therapy and then start TB treatment 4 weeks later.", "Start TB therapy and then start antiretroviral therapy as soon as possible after.", "Start both antiretroviral therapy and TB treatment together, as soon as possible."], answer: 2 },
-        { guideline: "[Chapter 140: Tuberculosis]", text: "A 55-year-old emergency room nurse was exposed to TB 4 weeks ago. Susceptibility data are pending for the patient’s isolate. Her current purified protein derivative (PPD) was read as 8 mm induration. She has no symptoms and her chest x-ray is normal. Which of the following is the best option in this patient?", options: ["No treatment needed at this time because the patient is asymptomatic", "Rifampin daily for 12 months", "Isoniazid daily for 9 months", "Rifampin and pyrazinamide for 4 months"], answer: 2 },
-        { guideline: "[Chapter 140: Tuberculosis]", text: "A 67-year-old man has received 8 weeks of therapy with rifampin, isoniazid, ethambutol, and pyrazinamide. His sputum was negative for AFB within 2 weeks of initiating therapy. Laboratory tests are drawn and liver function tests are reported as: AST 166 IU/L (8-48 IU/L) and ALT 96 IU/L (7-55 IU/L) (or AST 2.77 µkat/L [0.13-0.80 µkat/L] and ALT 1.60 µkat/L [0.12-0.92 µkat/L]). Which of the following would be the best option for the patient at this time?", options: ["Discontinue isoniazid and rifampin and start pyrazinamide, levofloxacin, and ethionamide.", "Discontinue isoniazid and rifampin and add moxifloxacin and check serum concentrations of his TB drugs.", "Discontinue all TB drugs, continue to recheck liver function tests, and restart same treatment when liver function returns to normal.", "Continue current treatment and continue to monitor for continued elevation of liver function tests."], answer: 3 },
-        { guideline: "[Chapter 140: Tuberculosis]", text: "A 32-year-old healthcare worker tests positive for latent tuberculosis infection (LTBI) with a tuberculin skin test (TST) induration of 12 mm. He has no symptoms and a normal chest x-ray. Which of the following is the preferred regimen for treating LTBI in this patient?", options: ["Isoniazid for 6 months", "Isoniazid for 9 months", "Rifampin for 4 months", "Isoniazid and rifapentine once weekly for 3 months"], answer: 2 },
-        { guideline: "[Chapter 140: Tuberculosis]", text: "A 60-year-old male with pulmonary tuberculosis is also receiving treatment for HIV with a regimen containing dolutegravir, tenofovir, and emtricitabine. Which of the following changes is necessary when initiating TB treatment with rifampin?", options: ["Increase the dose of dolutegravir", "Substitute rifampin with rifabutin", "Discontinue antiretroviral therapy (ART) until TB treatment is completed", "No change is necessary"], answer: 1 },
-        { guideline: "[Chapter 141: Gastrointestinal Infections and Enterotoxigenic Poisonings]", text: "Treatment for an adult with campylobacteriosis that started having bloody diarrhea 2 days ago should be initiated on which of the following medication?", options: ["Ciprofloxacin", "Doxycycline", "Metronidazole", "Azithromycin", "No antimicrobial therapy is warranted"], answer: 3 },
-        { guideline: "[Chapter 141: Gastrointestinal Infections and Enterotoxigenic Poisonings]", text: "A patient is diagnosed with CDI and has a WBC of 17,500 cells/mm3 (17.5 × 109/L). Which of the following regimens would be an appropriate selection for treatment, according to the most recent guidelines for the treatment of CDI?", options: ["Metronidazole 500 mg orally every 8 hours", "Vancomycin 125 mg orally every 6 hours", "Fidaxomicin 200 mg orally twice daily", "All of the above are appropriate", "Only two of the above are appropriate"], answer: 4 },
-        { guideline: "[Chapter 141: Gastrointestinal Infections and Enterotoxigenic Poisonings]", text: "According to current guidelines, a patient diagnosed with first-episode CDI that is determined to be critically ill (has systemic symptoms including hypotension) should be treated with which of the following for C. difficile treatment?", options: ["Metronidazole orally", "Vancomycin orally", "Vancomycin intravenously", "Fidaxomicin orally", "Metronidazole intravenously + vancomycin orally"], answer: 4 },
-        { guideline: "[Chapter 142: Intra-abdominal Infections]", text: "The most reasonable initial intraperitoneal empiric antibiotic therapy for a 46-year-old male patient with peritoneal dialysis-associated peritonitis and a history of immediate hypersensitivity reaction (reaction occurred within the last year) to penicillin is:", options: ["Cefazolin plus ceftazidime (LD 500 mg/L, MD 125 mg/L for each)", "Cefepime (LD 500 mg/L, MD 125 mg/L)", "Vancomycin (LD 1,000 mg/L, MD 25 mg/L) plus tobramycin (LD 8 mg/L, MD 4 mg/L)", "Metronidazole (LD 250 mg/L, MD 50 mg/L)"], answer: 2 },
-        { guideline: "[Chapter 142: Intra-abdominal Infections]", text: "A 23-year-old woman who is not severely ill and is otherwise in good health is determined to have a perforated appendix. Which of the following is the best antibiotic regimen for this patient?", options: ["Cefazolin plus vancomycin", "Ceftriaxone plus metronidazole", "Aztreonam plus vancomycin", "Cefazolin plus gentamicin"], answer: 1 }
-    ].map((q, index) => {
-        return { ...q, text: `${index + 1}. ${q.text}` };
-    });
-
-    // 지정하신 순서대로 퀴즈 목록 구성
-    const quizLibrary = [
-        {
-            id: 'final_2025',
-            title: '2025 약물치료학2 기말고사',
-            data: finalData2025
-        },
-        {
-            id: 'case_study_2026',
-            title: '2026 약물치료학2 5-1 케이스 스터디',
-            data: caseStudyData2026
-        },
-        {
-            id: 'vte_2025',
-            title: '2025 약물치료학2 5-1 중간 (기말 범위 VTE)',
-            data: vteData2025
-        },
-        {
-            id: 'final_2024_no_dup',
-            title: '2024 약물치료학2 5-1 기말 (25 중복 제외)',
-            data: finalData2024_no_dup
-        },
-        {
-            id: 'id_2025',
-            title: '2025 약물치료학2 ID 퀴즈',
-            data: idData2025
-        },
-        {
-            id: 'past_2022_2024',
-            title: '2022-2024 약물치료학2 5-1 중간 (통합 족보)',
-            data: combined22_24
-        },
-        {
-            id: 'midterm_2025_lipid_included',
-            title: '2025년 약물치료학2 5-1 중간 (2026 대비 VTE 제외, CV 퀴즈 지질 포함)',
-            data: midterm2025_with_lipid
-        },
-        {
-            id: 'midterm_2025_revised',
-            title: '2025년 약물치료학2 5-1 중간 (2026 대비 VTE 제외)',
-            data: midterm2025_revised
-        },
-        {
-            id: 'midterm_2025',
-            title: '2025 약물치료학2 5-1 중간 (전체 문항)',
-            data: midterm2025
-        },
-        {
-            id: 'cv_2024_revised',
-            title: '2024 약물치료학2 CV 퀴즈 (2026 CV 대비 지질 제외)',
-            data: refinedData2026
-        },
-        {
-            id: 'cv_2024',
-            title: '2024 약물치료학2 CV 퀴즈',
-            data: masterData2024
-        }
-    ];
-
-    let currentOriginalData = []; 
-    let activeQuizData = [];      
-    let currentQuestion = 0;
-    let userAnswers = [];
-    let flaggedQuestions = [];
-    let isEssayMode = false;
 
     function showDashboard() {
         document.getElementById('dashboard-container').style.display = 'block';
@@ -833,7 +730,6 @@
         document.getElementById('retry-incorrect-btn').style.display = score === activeQuizData.length ? 'none' : 'inline-block';
     }
 
-    // 초기 화면(대시보드) 자동 실행
     showDashboard();
 </script>
 </body>
