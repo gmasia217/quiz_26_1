@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pharmacotherapy Midterm Test (중간)</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="약치 중간 퀴즈">
+<meta name="theme-color" content="#0d6efd">
+<link rel="manifest" id="manifest">
+<script>
+    const manifest = {
+        "name": "약물치료학 중간 퀴즈",
+        "short_name": "약치 중간",
+        "display": "standalone",
+        "start_url": ".",
+        "background_color": "#f8f9fa",
+        "theme_color": "#0d6efd",
+        "icons": [{
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230d6efd'/%3E%3Ctext x='50' y='65' font-size='50' fill='white' text-anchor='middle'%3E💊%3C/text%3E%3C/svg%3E",
+            "sizes": "192x192",
+            "type": "image/svg+xml"
+        }]
+    };
+    document.getElementById('manifest').href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
+</script>
+
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        margin: 0;
+        background-color: #f8f9fa;
+        color: #333;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+        user-select: none; 
+        -webkit-user-select: none;
+    }
+
+    .sidebar {
+        width: 280px;
+        background-color: #f1f3f5;
+        border-right: 1px solid #dee2e6;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        flex-shrink: 0;
+        display: none; 
+    }
+    .sidebar-header {
+        padding: 15px;
+        background-color: #e9ecef;
+        font-weight: bold;
+        color: #0d6efd;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .header-buttons {
+        display: flex;
+        gap: 5px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+    .action-btn {
+        background: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 6px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        color: #495057;
+        flex-grow: 1;
+        text-align: center;
+        box-sizing: border-box;
+    }
+    .action-btn.full-width { flex-basis: 100%; }
+    .action-btn:hover { background: #e9ecef; }
+    
+    .nav-grid-container {
+        padding: 15px;
+        overflow-y: auto;
+        flex-grow: 1;
+    }
+    .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 5px;
+    }
+    .nav-btn {
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 3px;
+        padding: 8px 0;
+        text-align: center;
+        cursor: pointer;
+        font-size: 14px;
+        position: relative;
+    }
+    .nav-btn.answered { background: linear-gradient(to bottom, #fff 50%, #adb5bd 50%); }
+    .nav-btn.active { border: 2px solid #000; font-weight: bold; }
+    .nav-btn.flagged::after {
+        content: ''; position: absolute; top: 0; right: 0;
+        border-width: 0 10px 10px 0; border-style: solid; border-color: transparent red transparent transparent;
+    }
+    .sidebar-footer { padding: 15px; border-top: 1px solid #dee2e6; }
+    .submit-link { color: #0d6efd; text-decoration: none; cursor: pointer; }
+    .submit-link:hover { text-decoration: underline; }
+
+    .main-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow-y: auto;
+    }
+    
+    #dashboard-container {
+        padding: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .quiz-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .quiz-card {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s;
+    }
+    .quiz-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .quiz-card h3 { margin: 0 0 10px 0; font-size: 18px; color: #0d6efd; }
+    .quiz-card p { margin: 0 0 20px 0; color: #6c757d; font-size: 14px; }
+
+    .breadcrumb {
+        padding: 15px 30px;
+        background-color: #fff;
+        border-bottom: 1px solid #dee2e6;
+        color: #6c757d;
+        font-size: 14px;
+    }
+    .breadcrumb a { text-decoration: none; color: inherit; }
+    .breadcrumb a:hover { text-decoration: underline; color: #0d6efd; }
+    .breadcrumb-link {
+        cursor: pointer;
+        color: #0d6efd;
+    }
+    .breadcrumb-link:hover { text-decoration: underline; }
+    
+    #quiz-container {
+        padding: 30px;
+        max-width: 900px;
+        user-select: text; 
+        -webkit-user-select: text;
+        display: none; 
+    }
+    .question-layout { display: flex; gap: 20px; margin-bottom: 20px; }
+    .info-box {
+        width: 130px; background-color: #f8f9fa; border: 1px solid #dee2e6;
+        padding: 15px; font-size: 13px; height: fit-content;
+    }
+    .info-box h3 { margin: 0 0 10px 0; font-size: 16px; }
+    .flag-btn {
+        color: #212529; background: none; border: none; padding: 0;
+        cursor: pointer; margin-top: 15px; text-decoration: none; display: flex; align-items: center; gap: 5px;
+    }
+    .flag-btn:hover { text-decoration: underline; }
+    
+    .question-box {
+        flex-grow: 1; background-color: #f1f8ff; border: 1px solid #bce8f1;
+        padding: 20px; border-radius: 4px;
+    }
+    .guideline-text { font-weight: bold; margin-bottom: 15px; font-size: 14px; color: #0d6efd; }
+    .question-text { font-size: 15px; margin-bottom: 20px; line-height: 1.5; }
+    .option { margin-bottom: 10px; display: flex; align-items: center; font-size: 15px; }
+    .option input { margin-right: 10px; cursor: pointer; }
+    
+    .essay-input {
+        width: 100%; height: 120px; padding: 15px; border: 1px solid #ced4da;
+        border-radius: 4px; font-size: 15px; resize: vertical; box-sizing: border-box; font-family: inherit; line-height: 1.5;
+    }
+    .essay-input:focus { outline: none; border-color: #86b7fe; box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); }
+    .clear-choice { display: inline-block; margin-top: 15px; color: #0d6efd; cursor: pointer; font-size: 14px; }
+    .clear-choice:hover { text-decoration: underline; }
+    .nav-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    
+    .btn { padding: 8px 16px; border: 1px solid #ced4da; background-color: #fff; cursor: pointer; border-radius: 4px; font-size: 14px; }
+    .btn-primary { background-color: #0d6efd; color: white; border-color: #0d6efd; }
+    .btn-primary:hover { background-color: #0b5ed7; }
+    .btn-danger { background-color: #dc3545; color: white; border-color: #dc3545; }
+    .btn-danger:hover { background-color: #bb2d3b; }
+
+    #results-container {
+        padding: 30px; max-width: 900px; display: none; user-select: text; -webkit-user-select: text;
+    }
+    .result-item { background-color: #fff; border: 1px solid #dee2e6; border-radius: 4px; padding: 20px; margin-bottom: 15px; }
+    .result-item.correct { border-left: 5px solid #198754; }
+    .result-item.incorrect { border-left: 5px solid #dc3545; }
+    .status-badge { font-weight: bold; margin-bottom: 10px; display: inline-block; }
+    .status-correct { color: #198754; }
+    .status-incorrect { color: #dc3545; }
+
+    @media (max-width: 768px) {
+        body { flex-direction: column; overflow: auto; height: auto; }
+        .sidebar { width: 100%; height: auto; order: 2; border-right: none; border-top: 2px solid #dee2e6; }
+        .main-content { order: 1; overflow-y: visible; }
+        #quiz-container, #results-container, #dashboard-container { padding: 15px; padding-bottom: 100px; }
+        .question-layout { flex-direction: column; gap: 10px; }
+        .info-box { width: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 15px; padding: 10px 15px; }
+        .info-box h3 { margin: 0; }
+        #q-status-display { margin-bottom: 0 !important; }
+        .flag-btn { margin-top: 0; }
+        .breadcrumb { padding: 10px 15px; font-size: 12px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="sidebar" id="app-sidebar">
+    <div class="sidebar-header">
+        <div>Quiz navigation</div>
+        <div class="header-buttons">
+            <button class="action-btn" onclick="shuffleQuiz()">🔀 문제 섞기</button>
+            <button class="action-btn" onclick="resetOrder()">🔄 원래대로</button>
+            <button class="action-btn full-width" id="mode-toggle-btn" onclick="toggleMode()">📝 서술형 모드 켜기</button>
+        </div>
+    </div>
+    <div class="nav-grid-container">
+        <div class="nav-grid" id="nav-grid"></div>
+    </div>
+    <div class="sidebar-footer">
+        <a class="submit-link" onclick="showResults()">Finish attempt ...</a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="breadcrumb">
+        <a href="../../index.html">🏠 홈</a> / <a href="../index.html" style="text-decoration:none; color:inherit;">약물치료학2</a> / <span class="breadcrumb-link" onclick="showDashboard()">중간</span> / <span id="breadcrumb-current">퀴즈 목록</span>
+        <span id="mode-indicator" style="font-weight:bold; color:#0d6efd; margin-left:10px; display:none;">[객관식 모드]</span>
+    </div>
+
+    <div id="dashboard-container">
+        <h2>약물치료학2 중간 퀴즈 목록</h2>
+        <div class="quiz-grid" id="quiz-grid"></div>
+    </div>
+    
+    <div id="quiz-container">
+        <div class="question-layout">
+            <div class="info-box">
+                <h3 id="q-number-display">Question 1</h3>
+                <div id="q-status-display" style="color: #6c757d; margin-bottom: 10px;">Not yet answered</div>
+                <div>Marked out of 1.00</div>
+                <button class="flag-btn" onclick="toggleFlag()" id="flag-btn-display">🚩 Flag question</button>
+            </div>
+            <div class="question-box">
+                <div class="guideline-text" id="guideline-display"></div>
+                <div class="question-text" id="q-text-display">Question text goes here</div>
+                <div id="options-container"></div>
+                <div class="clear-choice" onclick="clearChoice()">Clear my choice / 입력 지우기</div>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn" id="prev-btn" onclick="changeQuestion(-1)">Previous page</button>
+            <button class="btn btn-primary" id="next-btn" onclick="changeQuestion(1)">Next page</button>
+        </div>
+    </div>
+
+    <div id="results-container">
+        <h2>퀴즈 결과</h2>
+        <div style="margin-bottom: 10px;">
+            <span id="score-display" style="font-size: 18px; font-weight: bold;"></span>
+        </div>
+        <div id="essay-warning" style="display: none; color: #dc3545; font-size: 14px; margin-bottom: 20px; font-weight: bold;">
+            * 서술형 모드에서는 띄어쓰기나 대소문자 차이로 자동 오답 처리될 수 있습니다. 반드시 '모범 답안'과 눈으로 직접 비교해 보세요!
+        </div>
+        <div id="results-list"></div>
+        <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="resetOrder()">방금 푼 퀴즈 처음부터 다시 풀기</button>
+            <button class="btn btn-danger" id="retry-incorrect-btn" onclick="retryIncorrect()">❌ 틀린 문제만 다시 풀기</button>
+            <button class="btn" onclick="showDashboard()">목록으로 돌아가기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const masterData2024 = [
+        { guideline: "[2022년 고혈압 진료지침]", text: "1. 노인 환자의 수축기혈압은 mmHg 미만으로 조절할 것을 권고한다.", options: ["120", "130", "140", "150"], answer: 2 },
+        { guideline: "[2022년 고혈압 진료지침]", text: "2. 심혈관질환이 있는 고혈압환자에서 이차 예방을 위해 아스피린을 투여를 권고한다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[2022년 고혈압 진료지침]", text: "3. 미세단백뇨나 단백뇨를 동반한 당뇨병 환자의 고혈압 치료약제로 ( )를 권고한다.", options: ["ACE 억제제", "베타차단제", "칼슘차단제", "티아지드계 이뇨제"], answer: 0 },
+        { guideline: "[2022년 고혈압 진료지침]", text: "4. 정맥 내 혈전용해 치료가 적합한 급성기 허혈성 뇌졸중 환자에서 혈압이 높은 경우 정맥 내 혈전용해 치료 시작 전에 혈압을 140/90 mmHg 이하로 낮출 것을 권고한다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[2022년 고혈압 진료지침]", text: "5. 임신 중 사용할 수 있는 항고혈압약제가 아닌 것은?", options: ["Captopril", "Hydralazine", "Labetalol", "Methyldopa"], answer: 0 },
+        { guideline: "[2017 ACC/AHA Guideline for HTN]", text: "6. Adults with SIHD and hypertension should be treated with medications ( ) for compelling indications as first-line therapy.", options: ["GDMT calcium channel blockers, thiazide diuretics", "GDMT ACE inhibitors, ARBS", "GDMT beta blockers, thiazide diuretics", "GDMT beta blockers, ACE inhibitors"], answer: 3 },
+        { guideline: "[2017 ACC/AHA Guideline for HTN]", text: "7. ( ) is NOT recommended in the treatment of hypertension in adults with HFrEF.", options: ["Nifedipine", "Amlodipine", "Clevidipine", "Verapamil"], answer: 3 },
+        { guideline: "[2017 ACC/AHA Guideline for HTN]", text: "8. In adults with HFpEF who present with symptoms of volume overload, ( ) should be prescribed to control hypertension.", options: ["Diuretics", "Beta blockers", "Calcium channel blockers", "ACE inhibitors"], answer: 0 },
+        { guideline: "[2017 ACC/AHA Guideline for HTN]", text: "9. In adults with hypertension and CKD, treatment with ( ) is reasonable to slow kidney disease progression.", options: ["ACE inhibitor", "Calcium channel blocker", "Diuretic", "Beta blocker"], answer: 0 },
+        { guideline: "[2017 ACC/AHA Guideline for HTN]", text: "10. For adults who experience a stroke or TIA, treatment with ( ) is useful", options: ["Thiazide diuretic, ACE inhibitor, or ARB", "Loop diuretic, ACE inhibitor, or ARB", "Calcium channel blocker, ACE inhibitor, or ARB", "Beta blocker, ACE inhibitor, or ARB"], answer: 0 },
+        { guideline: "[2023 Chronic Coronary Disease: Guideline for Management]", text: "11. ( ) remain first line therapy for lipid lowering inpatients with CCD.", options: ["Ezetimibe", "Statin", "Fenofibrate", "Alirocumab"], answer: 1 },
+        { guideline: "[2023 Chronic Coronary Disease: Guideline for Management]", text: "12. In patients with CCD treated with PCI, dual antiplatelet therapy (DAPT) consisting of ( ) for 6 months post PCI followed by single antiplatelet therapy (SAPT) is indicated to reduce MACE and bleeding events.", options: ["aspirin and dipyridamole", "clopidogrel and prasugrel", "clopidogrel and ticagrelor", "aspirin and clopidogrel"], answer: 3 },
+        { guideline: "[2023 Chronic Coronary Disease: Guideline for Management]", text: "13. In patients with CCD, an annual influenza vaccination is NOT recommended.", options: ["True", "False"], answer: 1 },
+        { guideline: "[2023 Chronic Coronary Disease: Guideline for Management]", text: "14. In patients with CCD and angina, antianginal therapy with either a beta blocker, CCB, or long-acting nitrate is recommended for immediate short-term relief of angina or equivalent symptoms.", options: ["True", "False"], answer: 1 },
+        { guideline: "[2023 Chronic Coronary Disease: Guideline for Management]", text: "15. In patients with CCD, ( ) is recommended in patients who remain symptomatic despite treatment with beta blockers, CCB, or long-acting nitrate therapies.", options: ["Ivabradine", "Metoprolol", "Ranolazine", "Amlodipine"], answer: 2 },
+        { guideline: "[2022 이상지질혈증 치료지침]", text: "16. 스타틴 투약 전( )를 시행하고 투약 후( ) 수치가 3배 이상 상승되었을 때 투약 중단을 권고한다.", options: ["인지기능검사, MMSE", "갑상샘기능검사, 갑상샘호르몬", "심장기능검사, 트로포닌", "간기능검사, 간효소"], answer: 3 },
+        { guideline: "[2022 이상지질혈증 치료지침]", text: "17. LDL 콜레스테롤 목표에 도달하기 위하여 스타틴과 니코틴산의 병용투여를 추천한다.", options: ["True", "False"], answer: 1 },
+        { guideline: "[2022 이상지질혈증 치료지침]", text: "18. 최대 가용 용량의 스타틴을 투여해도 LDL 콜레스테롤이 목표 수치 미만으로 감소하지 않으면 ( )를 병용한다.", options: ["담즙산 결합수지", "에제티미브", "피브린산 유도체", "오메가-3 지방산"], answer: 1 },
+        { guideline: "[2022 이상지질혈증 치료지침]", text: "19. ( )이 있는 경우에는 기저 LDL 콜레스테롤 농도와 상관없이 바로 스타틴을 투약한다.", options: ["대동맥질환", "만성콩팥병", "심방세동", "급성심근경색"], answer: 3 },
+        { guideline: "[2022 이상지질혈증 치료지침]", text: "20. 중성지방이 지속적으로 500 mg/dL 이상인 경우, 중성지방 조절을 위한 약제로( )를 고려한다.", options: ["스타틴+에제티미브", "피브린산 유도체", "오메가-3 지방산", "1,2", "2,3", "1,3", "1,2,3"], answer: 4 },
+        { guideline: "[2018 AHA/ACC Guideline for Blood Cholesterol]", text: "21. In patients with severe primary hypercholesterolemia (LDL-C level >190 mg/dL), without calculating 10-year ASCVD risk, begin ( ) therapy.", options: ["high intensity statin", "moderate-intensity statin", "statin with ezetimibe", "statin with PCSK9 inhibitor"], answer: 0 },
+        { guideline: "[2018 AHA/ACC Guideline for Blood Cholesterol]", text: "22. In patients 40 to 75 years of age with DM and LDL-C > 70 mg/dL, start( ) therapy without calculating 10-year ASCVD risk.", options: ["high intensity statin", "moderate-intensity statin", "statin with ezetimibe", "statin with PCSK9 inhibitor"], answer: 1 },
+        { guideline: "[2018 AHA/ACC Guideline for Blood Cholesterol]", text: "23. Select a 'Major ASCVD Event'.", options: ["Heterozygous familial hypercholesterolemia", "Diabetes mellitus", "History of congestive HF", "History of ischemic stroke"], answer: 3 },
+        { guideline: "[2018 AHA/ACC Guideline for Blood Cholesterol]", text: "24. Which one is a risk-enhancing factor?", options: ["high-sensitivity C-reactive protein ≥ 2.0 mg/L", "ankle-brachial index <1.9", "lipoprotein (a) ≥ 150 mg/dL", "persistent elevations of triglycerides ≥ 150 mg/dL"], answer: 0 },
+        { guideline: "[2018 AHA/ACC Guideline for Blood Cholesterol]", text: "25. Assess adherence and percentage response to LDL-C-lowering medications and lifestyle changes with repeat lipid measurement ( ) after statin initiation or dose adjustment.", options: ["1 to 2 weeks", "2 to 4 weeks", "4 to 12 weeks", "12 to 18 weeks"], answer: 2 },
+        { guideline: "[2022 대한심부전학회 심부전 진료지침]", text: "26. 박출률 감소 심부전 환자에서 심혈관계 사망률과 심부전으로 인한 재입원을 감소시키므로, 표준치료로 사용해야 하는 약물계열은?", options: ["안지오텐신수용체-네프릴리신억제제(ARNI)", "베타차단제", "알도스테론 길항제", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[2022 대한심부전학회 심부전 진료지침]", text: "27. 대규모 임상 연구를 통해 심부전 치료 효과가 검증된 베타차단제는?", options: ["비소프롤롤, 카르베디롤, 라베탈롤", "비소프롤롤, 카르베디롤, 메토프로롤 서방정", "프로프라놀롤, 비소프롤롤, 메토프로롤 서방정", "아테놀롤, 메토프로롤, 카르베디롤"], answer: 1 },
+        { guideline: "[2022 대한심부전학회 심부전 진료지침]", text: "28. 당뇨병 동반유무와 관계없이 심부전으로 인한 입원 또는 심혈관계 사망을 감소시키기 위해 투여를 권고하는 나트륨-포도당 공동수송체2(SGLT2) 억제제는?", options: ["saxagliptin 또는 empagliflozin", "canagliflozin 또는 tirzepatide", "dapagliflozin 또는 semaglutide", "empagliflozin 또는 dapagliflozin"], answer: 3 },
+        { guideline: "[2022 대한심부전학회 심부전 진료지침]", text: "29. 체액저류의 소견이 있는 심부전 환자에서 좌심실 수축기능 부전의 동반 여부와 관계없이 적정 체액량을 유지하기 위해 ( )를 사용해야 한다.", options: ["이뇨제", "베타차단제", "알도스테론 길항제", "SGLT2 억제제"], answer: 0 },
+        { guideline: "[2022 대한심부전학회 심부전 진료지침]", text: "30. 좌심실 박출률이 35% 이하이고, 안정시 맥박수가 분당 70회 이상인 동율동의 심부전 환자에서, 베타차단제, ACE(또는 ARNI), 알도스테론 길항제)를 사용함에도 불구하고 심부전 증상이 지속될 경우 심부전으로 인한 입원 및 심혈관계 사망 위험을 줄이기 위해 사용할 수 있는 약물은?", options: ["verapamil", "ivabradine", "ranolazine", "amiodarone"], answer: 1 },
+        { guideline: "[2022 대한심부전학회 심부전 진료지침]", text: "31. 심방세동이 동반된 박출률 감소 심부전 환자에서 베타차단제를 사용해도 맥박조절이 잘 되지 않거나, 베타차단제 사용이 금기인 경우, 맥박 조절을 위해 디곡신 사용이 도움이 될 수 있다.", options: ["False", "True"], answer: 1 },
+        { guideline: "[2022 Guideline for the Management of Heart Failure]", text: "32. The clinical strategy of inhibition of the renin-angiotensin system with ACE inhibitors OR ARBS OR ARNI in conjunction with evidence-based beta blockers, and ( ) in selected patients, is recommended for patients with chronic HFrEF to reduce morbidity and mortality.", options: ["alpha blockers", "loop diuretics", "calcium channel blockers", "aldosterone antagonists"], answer: 3 },
+        { guideline: "[2022 Guideline for the Management of Heart Failure]", text: "33. In patients with type 2 diabetes and either established CVD or at high cardiovascular risk, ( ) should be used to prevent hospitalizations for HF.", options: ["ARNI", "beta blockers", "SGLT2i", "dihydropyridine calcium channel-blockers", "ACEI"], answer: 2 },
+        { guideline: "[2022 Guideline for the Management of Heart Failure]", text: "34. In patients with HF who have fluid retention, ( ) are recommended to relieve congestion, improve symptoms, and prevent worsening HF.", options: ["ACEi", "diuretics", "SGLT2i", "beta blockers"], answer: 1 },
+        { guideline: "[2022 Guideline for the Management of Heart Failure]", text: "35. Which medications that may cause or exacerbate HF?", options: ["NSAIDS", "Saxagliptin", "Thiazolidinediones", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[2019 Guideline for the Management of Patients With Atrial Fibrillation]", text: "36. Which medication is NOT recommended for selecting anticoagulant in patients with AF and an elevated CHA2DS2-VASc score of 2 or greater in men or 3 or greater in women?", options: ["Dabigatran", "Rivaroxaban", "Aspirin", "Apixaban"], answer: 2 },
+        { guideline: "[2019 Guideline for the Management of Patients With Atrial Fibrillation]", text: "37. Among patients treated with warfarin, ( ) should be determined at least weekly during initiation of anticoagulant therapy and at least monthly when anticoagulation is stable.", options: ["Anti-factor Xa", "INR", "aPTT", "PT"], answer: 1 },
+        { guideline: "[2019 Guideline for the Management of Patients With Atrial Fibrillation]", text: "38. ( ) and hepatic function should be evaluated before initiation of a DOAC and should be reevaluated at least annually.", options: ["Cognitive function", "Pulmonary function", "Renal function", "Gl function"], answer: 2 },
+        { guideline: "[2019 Guideline for the Management of Patients With Atrial Fibrillation]", text: "39. ( ) is recommended for the reversal of dabigatran in the event of life-threatening bleeding or an urgent procedure.", options: ["Idarucizumab", "Ciraparantag", "Andexanet", "Vitamin K"], answer: 0 },
+        { guideline: "[2019 Guideline for the Management of Patients With Atrial Fibrillation]", text: "40. Intravenous ( ) are recommended to slow a rapid ventricular response to AF in patients with ACS who do not display HF, hemodynamic instability, or bronchospasm.", options: ["calcium channel blockers", "ACE inhibitors", "alpha blockers", "beta blockers"], answer: 3 }
+    ];
+
+    const refinedData2026 = masterData2024.filter(q => 
+        !q.guideline.includes("이상지질혈증") && 
+        !q.guideline.includes("Blood Cholesterol")
+    ).map((q, index) => {
+        const cleanText = q.text.replace(/^\d+\.\s*/, '');
+        return { ...q, text: `${index + 1}. ${cleanText}` };
+    });
+
+    const lipidData2024 = masterData2024.filter(q => 
+        q.guideline.includes("이상지질혈증") || 
+        q.guideline.includes("Blood Cholesterol")
+    );
+
+    const midterm2025 = [
+        { guideline: "[HTN]", text: "A 78-year-old man has a PMH of hypertension for 10 years. His BP today is 158/82 mm Hg, HR is 60 bpm, SCr is 1.2 mg/dL and potassium is 4.3 mEq/L He is currently on lisinopril 40 mg daily and amlodipine 10 mg daily. Which of the following is the most appropriate medication to add to his antihypertensive regimen?", options: ["Hydrochlorothiazide", "Losartan", "Metoprolol", "Verapamil"], answer: 0 },
+        { guideline: "[HTN]", text: "A 56-year-old man has a history of poorly controlled HTN and cardiomyopathy (LVEF 35%). He reports not having taken his medications for the past week. The patient is asymptomatic, and his examination is unremarkable except for BP 160/120 mm Hg and HR 92 bpm. All laboratory values are WNLs except for SCr of 1.4 mg/dL and a urinalysis with 2+ proteinuria. Which medication would be best to manage this patient?", options: ["Clonidine", "Esmolol", "Lisinopril", "Nifedipine"], answer: 2 },
+        { guideline: "[HTN]", text: "Which of the following is preferred as add-on therapy for a patient who is post-MI (1 month ago) with a BP of 146/88 mmHg while treated with metoprolol succinate 200 mg daily?", options: ["Chlorthalidone", "Verapamil", "Amlodipine", "Lisinopril"], answer: 3 },
+        { guideline: "[HTN]", text: "Which of the following is preferred as initial antihypertensive therapy for a 63-year-old woman who is diagnosed with hypertension and has a history of ischemic stroke (6 months ago), with a BP of 186/108 mm Hg?", options: ["A thiazide with an ACEI", "A thiazide with a nonselective β-blocker", "A thiazide alone", "An ACEi with an ARB"], answer: 0 },
+        { guideline: "[HTN]", text: "The patient reports taking several nonprescription medications, including aspirin 81 mg daily, a daily multivitamin, acetaminophen, and loratadine. She asks whether these medications are safe to take given her hypertension. Provide appropriate counseling to the patient, addressing each medication individually.", options: ["저용량 아스피린: 출혈 위험 유의\n종합비타민: 감초(licorice) 성분 확인\n아세트아미노펜: 간독성 유의하며 복용 가능\nLoratadine: 혈압에 영향 없음 (안전)"], answer: 0, type: "essay" },
+        { guideline: "[HTN]", text: "A 72-year-old female presents to the ED with complaints of SOB. BP is 234/116 mm Hg. A chest x-ray reveals bilateral diffuse hazy infiltrates. PMH includes CAD, heart failure, HTN, and osteoporosis. Home medications include alendronate, aspirin, furosemide, losartan, metoprolol XL, and rosuvastatin. Which of the following BP targets is the most appropriate for this patient?", options: ["25% reduction over the first hour then 160/100 to 110 mm Hg over the next 2 to 6 hours.", "50% reduction over the first hour then 140/100 to 110 mm Hg over the next 2 to 6 hours.", "Immediately decrease the BP to a goal of <140/90 mm Hg within 1 hour.", "Immediately decrease the BP to a goal of <120/80 mm Hg within 1 hour <140/90 mm Hg as soon as possible."], answer: 0 },
+        { guideline: "[HTN]", text: "A 68-year-old man with a history of CKD stage V, HTN, and CAD presents with acute-onset SOB and CP. He was nonadherent to medical therapy for 2 days. He developed acute-onset chest tightness with diaphoresis, nausea, pain 7/10. He went to the ED with a BP of 250/120 mm Hg. He was admitted for hypertensive emergency. His BUN is 18 mg/dL and SCr 1.1 mg/dL. Which medication would be best to manage this patient?", options: ["Sodium nitroprusside", "Fosinopril", "Amlodipine", "Clonidine"], answer: 0 },
+        { guideline: "[HTN]", text: "A 68-year-old male presents to the ED with slurred speech, facial droop, and an unsteady gait. The patient's wife reports the patient was in a normal state of health 2.5 hours ago. BP readings upon arrival were 196/92 mm Hg and 204/96 mm Hg. HR is 89 bpm. Upon evaluation by the interdisciplinary healthcare team, the patient is diagnosed with ischemic stroke and a decision is made to administer IV alteplase. Which of the following is the most appropriate antihypertensive regimen for this patient?", options: ["Hydralazine 10 mg IV push", "Nicardipine 5 mg/hr IV infusion", "Nitroglycerin 5 mcg/min IV infusion", "Metoprolol 5 mg IV push"], answer: 1 },
+        { guideline: "[HTN]", text: "A 68-year-old male presents to the ED with slurred speech, facial droop, and an unsteady gait. The patient's wife reports the patient was in a normal state of health 2.5 hours ago. BP readings upon arrival were 196/92 mm Hg and 204/96 mm Hg. HR is 89 bpm. Upon evaluation by the interdisciplinary healthcare team, the patient is diagnosed with ischemic stroke and a decision is made to administer IV alteplase. Which of the following the best represents the risk of rapidly reducing blood pressure in this patient?", options: ["Acute kidney injury", "Cerebral hemorrhage", "Coronary ischemia", "Cerebral ischemia"], answer: 3 },
+        { guideline: "[IHD]", text: "Which of the following statements regarding nitrate tolerance is (are) true?", options: ["Nitrates should be scheduled to provide a nitrate-free interval of 10 to 12 hours to prevent loss of effect over time", "Nitrate-free interval is arranged during the daytime due to the nocturnal angina", "Nitrates should be combined with a β-blocker or a CCB (e.g., verapamil, diltiazem) because of nitrate-free interval", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[ACS]", text: "AB is a 54-year-old male who presents to the hospital with crushing substernal chest pain and radiating to his left arm. PMH is significant for HTN, COPD and has a history of smoking for 30 years. He is diagnosed with NSTE ACS. What is the preferred β-blocker for this patient?", options: ["Metoprolol", "Propranolol", "Carvedilol", "1, 2", "2,3", "1,3", "1,2,3"], answer: 0 },
+        { guideline: "[CCD]", text: "A 59-year-old man with a history of angina is given a prescription for isosorbide dinitrate 20 mg bid. A second agent that this patient should be warned NOT to take while on this oral nitrate formulation is:", options: ["Metoprolol", "Sildenafil", "Grapefruit juice", "Aspirin"], answer: 1 },
+        { guideline: "[CCD]", text: "A 68-year-old male presents with complaints of angina when walking two flights of stairs. The pain is relieved with rest and only occasionally requires a dose of SL nitroglycerin for relief. His PMH includes a history of MI 3 years ago, HTN, and hyperlipidemia. He quit smoking 3 years ago after his MI. His home medications include aspirin 81 mg daily, metoprolol 25 mg twice daily, and atorvastatin 80 mg daily. Vital signs: BP is 158/92 mm Hg, HR 82 bpm. Which of the following is most appropriate to treat this patient's angina?", options: ["Add ranolazine 1,000 mg twice daily", "Increase metoprolol to 50 mg twice daily", "Add SL nitroglycerin 1 tablet as needed for angina", "Add lisinopril 10 mg daily"], answer: 1 },
+        { guideline: "[CCD]", text: "The patient returns for a cardiology appointment 6 weeks later and states that his angina has improved and he is feeling much better. His laboratory findings are WNLs. Vital signs: BP is 140/88 mm Hg, HR 68 bpm. LDL 67 mg/dL. Which of the following is most appropriate to consider in this patient to reduce mortality?", options: ["Hydrochlorothiazide 25 mg daily", "Clopidogrel 75 mg daily", "Ezetimibe 10 mg daily", "Lisinopril 5 mg daily"], answer: 3 },
+        { guideline: "[CCD]", text: "A 75-year-old patient with SIHD presents with continued angina. His home medications include aspirin 81 mg daily, allopurinol 100 mg daily, lisinopril 20 mg daily, carvedilol 25 mg twice daily, rosuvastatin 20 mg daily, isosorbide mononitrate 60 mg daily, and acetaminophen as needed for pain. His PMH includes a history of MI, HTN, gout, dyslipidemia, and arthritis. Vital signs: BP 100/60 mm Hg; HR 62 bpm, weight 90 kg. Laboratory findings are WNLS. Which of the following is the most appropriate option to treat this patient's angina?", options: ["Change carvedilol 25 mg twice daily to amlodipine 10 mg daily", "Add ranolazine 500 mg twice daily", "Change isosorbide mononitrate to a nitroglycerin patch", "Increase carvedilol to 50 mg twice daily"], answer: 1 },
+        { guideline: "[ACS/CCD]", text: "A 58-year-old man, is discharged from the hospital after an NSTEMI. His medical history is significant for HTN. He was taking HCTZ 12.5 mg/day before hospitalization. An echocardiogram shows an LVEF greater than 60%. His VS include BP 130/65 mm Hg and HR 64 bpm. His drug regimen consists of aspirin 81 mg/day, atenolol 50 mg/day, HCTZ 25 mg/day, atorvastatin 80 mg/day, and NG SL 0.4 mg. Which is the best action to this discharge regimen?", options: ["Discontinue HCTZ; add diltiazem ER", "Continue HCTZ; add amlodipine", "Discontinue HCTZ; add ramipril", "Continue HCTZ; add vitamin"], answer: 2 },
+        { guideline: "[SIHD]", text: "A 63-year-old male experiencing chest pain upon exertion has been diagnosed with classic angina, Nitroglycerin SL tablets have been prescribed. Provide patient counseling, including at least five important counseling points.", options: ["어두운 유리 용기에 보관\n화장실 보관 피하기\n항상 소지\n복용 시 앉아서 휴식\n개봉 후 6개월마다 교체\n첫 복용 후 완화되지 않으면 911 연락 등"], answer: 0, type: "essay" },
+        { guideline: "[CCD]", text: "A 72-year-old patient presents with chest pain after a recent drug-eluting stent placement 3 months ago and is treated for STEMI due to in-stent thrombosis with successful PCI. The patient reports compliance with his DAPT, which consisted of clopidogrel 75 mg daily and aspirin 81 mg daily. He also takes ranitidine for indigestion-related symptoms. Which of the following best describes a rationale for clopidogrel's reduced activity in this patient?", options: ["Drug interaction with ranitidine", "Presence of CYP3A4 polymorphism", "Presence of CYP2C19 polymorphism", "Improper clopidogrel dose"], answer: 2 },
+        { guideline: "[SIHD]", text: "A 56-year-old patient had CABG surgery performed for refractory symptoms of angina despite maximally tolerated medical therapy and multiple PCIs. Which of the following medications should be initiated following CABG surgery and continued indefinitely to maintain patency of the saphenous vein grafts?", options: ["Warfarin", "Aspirin", "Ticagrelor", "Rivaroxaban"], answer: 1 },
+        { guideline: "[ACS]", text: "A 47-year-old patient (weight 78 kg) with a history of SIHD presents with substernal chest pressure. His ECG shows ST-segment depression. His initial troponin (cTn) is elevated. The patient undergoes PCI with two drug-eluting stents. According to practice guidelines, in addition to aspirin 81 mg daily, which P2Y12 inhibitor regimen is most appropriate for this patient at discharge?", options: ["Warfarin 5 mg once daily for 1 year", "Clopidogrel 75 mg daily for 6 months", "Prasugrel 10 mg daily for 1 year", "Ticagrelor 60 mg twice daily for 1 year"], answer: 2 },
+        { guideline: "[Heart Failure]", text: "Which of the following medication(s) that may exacerbate heart failure?", options: ["Ibuprofen", "Pioglitazone", "Etanercept", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[Heart Failure]", text: "Which of the below are the first treatment options for heart failure?", options: ["ARBS", "ARNI", "β-Blockers", "1,2", "2,3", "1,3", "1,2,3"], answer: 5 },
+        { guideline: "[Heart Failure]", text: "Which of the following is risk factor for spironolactone-induced hyperkalemia?", options: ["concomitant isosorbide dinitrate therapy", "concomitant metolazone therapy", "concomitant valsartan therapy", "concomitant furosemide therapy"], answer: 2 },
+        { guideline: "[Heart Failure]", text: "Which of the following should be used to monitor loop diuretic therapy in patients with heart failure?", options: ["Daily weights", "Serum potassium", "Serum magnesium", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[Heart Failure]", text: "A 67-year-old women with NYHA class II nonischemic dilated cardiomyopathy(LVEF of 30%). She presents to the clinic for follow-up. She has no complaints. Her medications include enalapril 10mg BID, and furosemide 40mg BID. Her VS include BP 130/88 mm Hg and HR 78 bpm. Her laboratory results are WNLS. Which would be the best option to further manage her HF?", options: ["continue current regimen", "increase enalapril", "initiate carvedilol", "initiate digoxin"], answer: 2 },
+        { guideline: "[Heart Failure]", text: "Which of the following statement(s) regarding ivabradine is(are) true?", options: ["Ivabradine is an agent that reduces heart rate and is used in the treatment of HFpEF.", "Ivabradine does not affect AV conduction, BP, or myocardial contractility.", "In the SHIFT trial, ivabradine reduced the risk of mortality in patients with HF in sinus rhythm.", "1,2", "2,3", "1,3", "1,2,3"], answer: 3 },
+        { guideline: "[Heart Failure]", text: "In the DAPA-HF Trial published in The New England Journal of Medicine in 2019, among patients with HFrEF, the risk of worsening heart failure or death from CV causes was lower among those who received dapagliflozin than among those who received placebo. This finding applied to patients:", options: ["with diabetes", "without diabetes", "irrespective of the presence or absence of diabetes"], answer: 2 },
+        { guideline: "[Heart Failure]", text: "Which statement(s) are correct regarding the results of the PARAGON-HF Trial, which was conducted to test the effect of sacubitril-valsartan in patients with HFpEF and published in The New England Journal of Medicine in 2019?", options: ["The incidence of death from CV causes was not significant in the sacubitril-valsartan group compared with the valsartan group.", "The sacubitril-valsartan group showed a significantly lower rate of total hospitalizations for heart failure.", "Patients in the sacubitril-valsartan group had a incidence of hypotension.", "1,2", "2,3", "1,3", "1,2,3"], answer: 5 },
+        { guideline: "[Heart Failure]", text: "A patient with sacubitril/valsartan 49/51 mg orally twice daily, dapagliflozin 10 mg orally daily, furosemide 40 mg orally twice daily, digoxin 0.125 mg, metoprolol succinate 25 mg orally daily. The patient presents with increasing SOB, fatigue, ankle swelling, and a 3 kg weight gain over the past 2 weeks. Labs are significant for serum potassium of 5.2 mEq/L, SCr 1.0 mg/dL, and serum digoxin concentration 0.8 ng/mL collected 18 hours after the last dose. Vital signs are BP 125/75 mm Hg and heart rate 75 bpm. Which is the most appropriate immediate intervention?", options: ["Increase the digoxin dose to 0.25 mg orally daily", "Initiate spironolactone 12.5 mg orally daily", "Increase the furosemide dose to 80 mg twice orally daily", "Increase the metoprolol dose to 50 mg orally daily"], answer: 2 },
+        { guideline: "[Heart Failure]", text: "A patient with HFpEF(LVEF 50-55%) also has DM, HTN, dyslipidemia, asthma, and atrial fibrillation. Current vital signs are: HR 85 bpm and BP 128/85 mmHg. Current labs include SCr 1.0mg/dL, serum potassium 4.3mEq/L, and HgbA1c 6.8%. Current medications include hydrochlorothiazide 25mg orally daily, lisinopril 10mg orally daily, atorvastatin 20mg orally daily, aspirin 81mg orally daily, metformin 1000mg orally twice daily, fluticasone 250/50 inhale 1 puff twice daily, and albuterol PRN. Which of the following medications will most likely improve health outcomes in this patient with HFpEF?", options: ["Metoprolol succinate", "Ivabradine", "Amlodipine", "Empagliflozin"], answer: 3 },
+        { guideline: "[Dyslipidemia]", text: "All of the following are considered to risk factors for dyslipidemia EXCEPT:", options: ["HDL cholesterol >60 ml/dL", "Hypertension", "Males ≥ 45 years old", "Family history of premature CHD", "Cigarette smoking"], answer: 0 },
+        { guideline: "[Dyslipidemia]", text: "Which of the following is (are) the risk factor(s) to increase the risk of developing statin-associated muscle symptoms?", options: ["advanced age", "female gender", "frequent heavy exercisers", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[Dyslipidemia]", text: "According to the 2018 AHA/ACC Guideline on the management of blood cholesterol, Combination therapy using a statin plus either _____ or _____ should be considered in very high-risk patients who do not reach their LDL-C target.", options: ["Cholestyramine", "Evolocumab", "Ezetimibe", "1,2", "2,3", "1,3", "1,2,3"], answer: 4 },
+        { guideline: "[Dyslipidemia]", text: "A 67 year-old patient recently diagnosed with high LDL-C(90mg/dL) caused by a heterozygous familial hypercholesterolemia is initiated on hypolipidemic monotherapy to try and achieve an LDL-C goal of <70mg/dL before considering the need for combination drug therapy. Within a week after initiating drug therapy the patient returns to the clinic complaining of severe shoulder pain, difficulty moving their arms and legs, and dark brown urine. Which of the following agents is most likely responsible for producing these adverse effects?", options: ["fenofibrate", "ezetimibe", "nicotinic acid", "statin", "cholestyramine"], answer: 3 },
+        { guideline: "[Dyslipidemia]", text: "A 50-years-old man who recently began combination therapy for dyslipidemia (high LDL, low HDL, high triglycerides) arrives in the clinic suffering from flushing, diarrhea, dry skin, and a rapid pulse. Which of the following agents is most likely responsible for these adverse effects?", options: ["lovastatin", "niacin", "ezetimibe", "gemfibrozil", "cholestyramine"], answer: 1 },
+        { guideline: "[Dyslipidemia]", text: "Lab results obtained for a 58-year-old man on statin therapy indicates high triglyceride levels despite adequate lowering of his LDL level to an acceptable range. His physician discusses the possibility of adding a controlled release formation of niacin to reduce his triglyceride level. Which of the following would be a contraindication for use of this medication?", options: ["pellagra", "acne", "gout", "hypertension"], answer: 2 },
+        { guideline: "[Dyslipidemia]", text: "A patient on statin therapy has achieved their target goal for lowering LDL-C, but has high triglyceride levels. Which class of drug, if added to their therapy, would be the best choice to correct this remaining dyslipidemia?", options: ["ezetimibe", "alirocumab", "gemfibrozil", "colestipol"], answer: 2 },
+        { guideline: "[Stroke/Arrhythmia]", text: "MM is a 67-year-old man with a history of HTN, DM and mitral stenosis. He presents to the clinic for follow-up. His HR is 82bpm with irregularly irregular rhythm. Electrocardiography reveals atrial fibrillation (AF). On previous echocardiography, MM was found to have a dilated left atrium secondary to mitral stenosis. Results of simvastatin 40mg at bedtime, lisinopril 20mg/day, and metformin 1000mg BID. Which one of the following antithrombotic regimens would be best to recommend for MM to prevent ischemic stroke caused by AF?", options: ["Enoxaparin", "Clopidogrel", "Warfarin", "Aspirin"], answer: 2 },
+        { guideline: "[Arrhythmia]", text: "you are asked to see a patient with new-onset atrial fibrillation, a rapid ventricular response (HR=179bpm) and thyrotoxicosis. Currently, his only symptoms are weakness and palpitations. which of the following do you suggest as initial therapy?", options: ["IV esmolol to control his ventricular rate", "IV ibutilide to restore sinus rhythm", "IV amiodarone to control his ventricular rate", "IV digoxin to control his ventricular rate"], answer: 0 },
+        { guideline: "[Arrhythmia]", text: "A 56-year-old woman with a PMH of HF (LVEF=30%) and paroxysmal atrial fibrillation is receiving digoxin, warfarin (INR 2 to 3), enalapril, furosemide, and metoprolol. The physician would like to initiate oral amiodarone. Which of the following medication(s) should be adjusted to avoid drug interactions with amiodarone?", options: ["Decrease the enalapril dose", "Decrease the warfarin dose", "Decrease the digoxin dose", "1,2", "2,3", "1,3", "1,2,3"], answer: 4 },
+        { guideline: "[Arrhythmia]", text: "Which of the following test(s) should be monitored for drug-induced toxicities of amiodarone?", options: ["Liver function tests", "Thyroid function test", "Pulmonary function tests", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[Arrhythmia]", text: "The dose of apixaban should be decreased in patients:", options: ["Age > 80 years", "weight > 60 kg", "SCr > 1.5 mg/dL", "1,2", "2,3", "1,3", "1,2,3"], answer: 5 },
+        { guideline: "[VTE]", text: "Which of the signs or symptoms are consistent with the diagnosis of DVT?", options: ["The patient's right and left ankles are very swollen", "The examiner feels a palpable cord in the patient's right leg", "The patient complains of pain in the right leg when flexing the right foot", "1,2", "2,3", "1,3", "1,2,3"], answer: 4 },
+        { guideline: "[VTE]", text: "A 45-year-old patient is diagnosed with a lower extremity DVT. The patient's weight is 70 kg. The physician would like to treat this patient with warfarin and LMWH. Which dose would be the most appropriate?", options: ["Enoxaparin 30 mg SC q12h", "Enoxaparin 40 mg SC q24h", "Enoxaparin 50 mg SC q12h", "Enoxaparin 70 mg SC q24h", "Enoxaparin 70 mg SC q12h"], answer: 4 },
+        { guideline: "[VTE]", text: "How long should heparin be continued in a patient with an acute DVT?", options: ["At least 24 hours until the INR is >2 on two consecutive occasions", "At least 48 hours until the INR is >3.5 on two consecutive occasions", "At least 1-2 days until the INR is >2 on two consecutive occasions", "At least 4-5 days until the INR is >2 on two consecutive occasions", "At least 7-10 days until the INR is >3.5 on two consecutive occasions"], answer: 3 },
+        { guideline: "[VTE]", text: "Which of the following is the most appropriate anticoagulation regimen for treatment of VTE during pregnancy?", options: ["Dabigatran", "Unfractionated heparin", "Warfarin", "Enoxaparin"], answer: 3 },
+        { guideline: "[VTE]", text: "A 70-year-old male patient with DVT and a baseline INR of 1.1 is started on warfarin 5 mg daily on day 1 and day 2 as well as enoxaparin 80 mg SC BID. The patient has no history of malignancy, malnutrition, heart failure, alcohol abuse, or liver dysfunction. INR today (day 3) is 1.5. Which of the following reflects the best warfarin dose for day 3?", options: ["10 mg", "5 mg", "1 mg", "HOLD warfarin today"], answer: 1 },
+        { guideline: "[VTE]", text: "SJ is a 76-year-old male (height=175 cm, weight = 105 kg) who is diagnosed with PE. Current medications include: lisinopril, hydrochlorothiazide, atorvastatin. Labs include BUN 26 mg/dL and SCr 2.3 mg/dL. What is the best recommendation for initial parenteral anticoagulant treatment for SJ's acute PE?", options: ["Enoxaparin 100 mg subcutaneously twice daily", "Dalteparin 5,000 units subcutaneously daily", "Fondaparinux 10 mg subcutaneously daily", "Unfractionated heparin 10,000 unit bolus with 2,000 units/hr continuous infusion"], answer: 3 },
+        { guideline: "[VTE]", text: "The benefits of LMWH over UFH include all of the following EXCEPT:", options: ["No renal adjustment necessary", "Not required routine aPTT monitoring", "Easy of administration (e.g., once or twice dosing)", "More predictable response"], answer: 0 },
+        { guideline: "[VTE]", text: "Which of the following statements regarding counseling on warfarin therapy is correct?", options: ["Patients should avoid all green leafy vegetables while on warfarin.", "Patients should be educated on the signs and symptoms of bleeding and when to seek medical attention.", "Warfarin can be safely discontinued without consulting a healthcare provider if minor bleeding occurs.", "Consistent monitoring of INR levels is unnecessary once a stable dosage is established."], answer: 1 },
+        { guideline: "[VTE]", text: "A patient asks about the differences between direct oral anticoagulants (DOACs) and warfarin. Which one of the following is the best counseling point to provide?", options: ["DOACs have fast onset and offset compared with warfarin.", "DOACs have less renal elimination than warfarin.", "DOACs must be taken BID compared with warfarin.", "DOACs do not require safety monitoring compared with warfarin."], answer: 0 },
+        { guideline: "[VTE]", text: "Which of the following is the most appropriate drug to administer for bleeding due to an accidental warfarin overdose?", options: ["Idarucizumab", "Protamine sulfate", "Andexanet", "Vitamin K", "Ciraparantag"], answer: 3 },
+        { guideline: "[VTE]", text: "This medication is a monoclonal antibody for the reversal of dabigatran.", options: ["Andexanet", "Ciraparantag", "Vitamin K", "Idarucizumab", "Protamine sulfate"], answer: 3 }
+    ];
+
+    const extraQuestions22_24 = [
+        { guideline: "[24,23,22-1 기출]", text: "Per 2017ACC/AHA guideline for HTN, if there are no specific indications for a particular medication based upon comorbidities, initial therapy should be chosen from among the following classes of medications EXCEPT:", options: ["thiazide-like or thiazide-type diuretics", "beta-blockers", "calcium channel blockers", "angiotensin 2 receptor blockers"], answer: 1 },
+        { guideline: "[24-11 기출]", text: "Which of the following statements regarding counseling on sublingual nitroglycerin is accurate?", options: ["Patients should sit down and place the sublingual nitroglycerin tablet under their tongue to minimize bradycardia and hypertension.", "Keep the sublingual nitroglycerin tablets in their original container to prevent degradation from exposure to light and moisture.", "Sublingual nitroglycerin can be used as a prophylactic measure before engaging in physical activities.", "Sublingual nitroglycerin tablets should be chewed for faster absorption."], answer: 2 },
+        { guideline: "[24,23-13, 22-13 기출]", text: "A 57-year-old man with a history of atrial fibrillation is diagnosed with classic angina. Which of the following would be contraindicated in this patient?", options: ["metoprolol", "nifedipine", "diltiazem", "verapamil"], answer: 1 },
+        { guideline: "[24-50, 23-48, 22-43 기출]", text: "LR is a 78-year-old woman who presents to the ED for symptoms of right-sided paralysis. She states that these symptoms began about 3 hours ago and have not improved since then. She also has hypertension, breast cancer, diabetes mellitus, minimal cognitive impairment, and osteoarthritis. Which is the most accurate list of LR's risk factors for stroke?", options: ["Age, diabetes mellitus, hypertension", "Sex, diabetes mellitus, osteoarthritis", "Minimal cognitive impairment, diabetes mellitus, sex", "Breast cancer, age, osteoarthritis"], answer: 0 },
+        { guideline: "[24, 23-49 기출]", text: "ST is a 68-year-old woman who presented with an ischemic stroke 2 days ago. The patient received alteplase and the neurological deficits improved. Prior to the stroke, the patient was taking no medications. The patient is allergic to aspirin (hives and SOB). Which of the following agents should ST receive to prevent recurrent strokes?", options: ["Extended-release dipyridamole plus aspirin", "Clopidogrel plus aspirin", "Aspirin", "Clopidogrel"], answer: 3 },
+        { guideline: "[24, 23-50 기출]", text: "Which of the following is an appropriate monitoring parameter for a patient given alteplase?", options: ["blue discoloration of the skin", "headache", "tongue swelling", "bleeding"], answer: 3 },
+        { guideline: "[24 기출 DRP]", text: "Which of the following are examples of drug-related problems?", options: ["Therapeutic duplication", "Untreated indication or no clear indication", "Inappropriate dose, dosage form, schedule, or route of administration", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[24 기출 DRP]", text: "Identify any DRPs in the following prescription case: [듀카로정 30/5/5 mg, 리피딜슈프라정 160 mg, 아토젯정 10/10 mg]", options: ["① 치료 중복 (Therapeutic duplication): 두 가지 statin 계열 약물을 동시 복용 중\n② 약물 상호작용 (Drug interaction): 스타틴 + 피브레이트 병용 시 근병증 위험 증가\n③ 불필요한 약물 치료 가능성"], answer: 0, type: "essay" },
+        { guideline: "[24 기출 DRP]", text: "Identify any DRPs in the following prescription case: [케이캡정 25mg, 디오반필름코팅정 80mg, 프라닥사캡슐 110mg, 레보텐션정 5mg, 리피토정10mg]", options: ["① 출혈 위험 증가: 프라닥사와 타 약제 상호작용 및 혈압 저하 모니터링\n② 고혈압약 중복 가능성 모니터링: 디오반+레보텐션\n③ 복약 복잡성: 프라닥사만 1일 2회로 복약 누락 위험\n④ 위산분비 억제제(케이캡)로 인한 프라닥사 흡수 감소 가능성"], answer: 0, type: "essay" },
+        { guideline: "[22-4 기출]", text: "MN is a 35-year-old woman who is 11 weeks pregnant. Her medication history is significant for chronic hypertension and asthma. Her BP today is 168/104 mmHg, HR is 66 bpm. If her prescriber wanted to initiate medication, which one of the following medications is best to recommend for MN's hypertension?", options: ["Atenolol", "Lisinopril", "Nifedipine extended release", "1,2", "2,3", "1,3", "1,2,3"], answer: 2 },
+        { guideline: "[22-15, 23-15 기출]", text: "A 64-year-old woman who is experiencing progressive dyspnea of effort comes to the clinic. Her pulse is regular at 95 bpm and her BP is 136/84 mmHg. Auscultation of her lungs reveals inspiratory crackles at both bases. There is no peripheral edema. An echocardiogram reveals a left ventricular chamber that is not dilated, with an estimated EF of 55%. Based upon your observations, which of the following would be most likely to reduce this patient's symptoms?", options: ["dobutamine", "digoxin", "hydralazine", "verapamil", "dopamine"], answer: 3 },
+        { guideline: "[22-21, 23-21 기출]", text: "Which is(are) SGLT2 inhibitor(s) approved to treat adults with heart failure with reduced ejection fraction.", options: ["canagliflozin", "dapagliflozin", "empagliflozin", "1,2", "1,3", "2,3", "1,2,3"], answer: 5 },
+        { guideline: "[23-43, 22-38, 21-44 기출]", text: "Provide at least two important information to counsel to a patient on warfarin therapy (one should be stated regarding diet information).", options: ["1. 비타민 K가 풍부한 음식(녹색 잎채소 등)의 섭취량을 일정하게 유지할 것 (피하는 것이 아님)\n2. 출혈 위험을 높일 수 있으므로 알코올 섭취를 피하거나 적당량만 마실 것\n3. 출혈 징후 발생 시 즉시 의료진과 상담할 것 등"], answer: 0, type: "essay" },
+        { guideline: "[22-44 기출]", text: "RH is a 65-year-old man who presents to the ED for new-onset right-sided weakness and slurred speech that began 3 hours ago. He has a history of HTN and CAD. His medication list includes atenolol 50mg/day orally, and aspirin 81mg/day orally. His vital signs include BP 140/92 mmHg, HR 92 bpm, RR 14 bpm, and temperature 38°C. Which in the best treatment for RH?", options: ["Alteplase", "Aspirin 25mg/dipyridamole ER 200mg", "Aspirin 81mg/day", "Clopidogrel 300 mg loading dose, then 75mg/day"], answer: 0 }
+    ];
+
+    const combined22_24 = [...midterm2025, ...extraQuestions22_24].map((q, index) => {
+        const cleanText = q.text.replace(/^\d+\.\s*/, '');
+        return { ...q, text: `${index + 1}. ${cleanText}` };
+    });
+
+    const midterm2025_revised = midterm2025.filter(q => 
+        !q.guideline.includes("[VTE]")
+    ).map((q, index) => {
+        const cleanText = q.text.replace(/^\d+\.\s*/, '');
+        return { ...q, text: `${index + 1}. ${cleanText}` };
+    });
+
+    const midterm2025_with_lipid = [...midterm2025.filter(q => !q.guideline.includes("[VTE]")), ...lipidData2024].map((q, index) => {
+        const cleanText = q.text.replace(/^\d+\.\s*/, '');
+        return { ...q, text: `${index + 1}. ${cleanText}` };
+    });
+
+    const idData2025 = [
+        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 폐렴에 이환되었을 가능성이 있는 성인에서 외래치료 시 1차 선택약으로 권고되는 항생제는?", options: ["Amoxicillin-clavulanate", "Cefditoren", "Cefpodoxime", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 폐렴에 이환되었을 가능성이 있는 성인에서 외래치료 시 B-lactam + macrolide는 ( )에 의한 폐렴이 의심되는 경우에 한해 권고한다.", options: ["그람양성균", "그람음성균", "비정형균", "혐기성균"], answer: 2 },
+        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 폐렴에 이환되었을 가능성이 있는 성인에서 적정 항생제 치료 기간은 적어도 ( ) 이상 투여하며, 폐렴 원인, 환자 상태, 항생제의 종류, 치료에 대한 반응, 동반 질환 및 폐렴 합병증 유무에 따라 달라진다.", options: ["3일", "5일", "10일", "15일"], answer: 1 },
+        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "( )은 MRSA에 의한 연조직 감염이나 균혈증에는 효과적이지만 폐의 표면활성제에 의해서 효과가 감소할 수 있어 폐렴에서는 권장되지 않는다.", options: ["Daptomycin", "Linezolid", "Teicoplanin", "Vancomycin"], answer: 0 },
+        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 폐렴으로 저산소증이 동반된 환자에서 산소요법으로 산소포화도 ( )%를 유지한다.", options: ["64-68", "74-78", "84-88", "94-98"], answer: 3 },
+        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "지역사회획득 methicillin-resistant S. aureus 폐렴이 의심되는 경우는 사용할 수 있는 항균제는?", options: ["linezolid", "teicoplanin", "vancomycin", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "심한 penicillin 이상반응 등으로 인해 B-lactam 사용이 어려운 환자에게 사용할 수 있는 respiratory fluoroquinolone은?", options: ["ciprofloxacin", "levofloxacin", "moxifloxacin", "1,2", "2,3", "1,3", "1,2,3"], answer: 4 },
+        { guideline: "[2018년 성인 지역사회획득 폐렴 항생제 사용지침]", text: "경구 macrolide 항생제 중 낮은 경구 생체이용률과 QT 간격 연장, 심혈관계 사망률 증가 등 이상반응 보고가 있어 사용을 권장하지 않는 것은?", options: ["erythromycin", "clarithromycin", "azithromycin"], answer: 0 },
+        { guideline: "[2019 ATS/IDSA CAP Guideline]", text: "Which statement is true regarding standard empiric therapy for severe CAP?", options: ["B-Lactam/macrolide and B-lactam/fluoroquinolone combinations given equal weighting.", "Both B-Lactam/macrolide and B-lactam/fluoroquinolone combinations are accepted but stronger evidence in favor of B-lactam/macrolide combination.", "Both B-Lactam/macrolide and B-lactam/fluoroquinolone combinations are accepted but stronger evidence in favor of B-lactam/fluoroquinolone combination."], answer: 1 },
+        { guideline: "[2019 ATS/IDSA CAP Guideline]", text: "Which antibiotic regimen is recommended for empiric treatment of CAP in outpatient adults with CKD?", options: ["amoxicillin/clavulanate 500 mg/125 mg three times daily", "clarithromycin 500 mg twice daily", "doxycycline 100 mg twice daily", "levofloxacin 750 mg daily"], answer: 3 },
+        { guideline: "[2019 ATS/IDSA CAP Guideline]", text: "Which antibiotic regimens are recommended for empiric treatment of CAP in inpatient adults without risk factors for MRSA and P.aeruginosa?", options: ["ampicillin/sulbactam 1.5-3 g every 6 h", "ceftaroline 600 mg every 12 h", "ceftriaxone 1-2 g daily with clarithromycin 500 mg twice daily", "1,2", "2,3", "1,3", "1,2,3"], answer: 2 },
+        { guideline: "[2019 ATS/IDSA CAP Guideline]", text: "( ) is recommended in adults with CAP who test positive for Influenza.", options: ["Oseltamivir", "Acyclovir", "Sofosbuvir", "Tenofovir"], answer: 0 },
+        { guideline: "[2019 ATS/IDSA CAP Guideline]", text: "Use of corticosteroids may be considered in patients with refractory septic shock.", options: ["True", "False"], answer: 0 },
+        { guideline: "[2016 ATS/IDSA HAP Guideline]", text: "Select antibiotic with antipseudomonal activity.", options: ["ampicillin/sulbactam", "meropenem", "vancomycin", "ceftriaxone"], answer: 1 },
+        { guideline: "[2016 ATS/IDSA HAP Guideline]", text: "Which antibiotic should be used to treat patients with HAP/VAP due to Acinetobacter species?", options: ["cefepime IV", "vancomycin IV", "polymyxin (colistin or polymyxin B) IV", "trimethoprim/sulfamethoxazole IV"], answer: 2 },
+        { guideline: "[2016 ATS/IDSA HAP Guideline]", text: "Which antibiotic should be used to treat patients with HAP/VAP due to extended-spectrum B-lactamase (ESBL)-producing gram-negative bacilli?", options: ["cefepime", "meropenem", "piperacillin-tazobactam", "1,2", "2,3", "1,3", "1,2,3"], answer: 1 },
+        { guideline: "[2018 요로감염 항생제 사용지침]", text: "당뇨병 여성에게는 무증상 세균뇨의 선별과 치료를 권하지 않는다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[2018 요로감염 항생제 사용지침]", text: "국내에서 단순 방광염을 치료하기 위하여 사용이 가능한 경험적 항생제는?", options: ["Erythromycin", "Fosfomycin", "Vancomycin", "Pivmecillinam"], answer: 1 },
+        { guideline: "[2018 요로감염 항생제 사용지침]", text: "우리나라에서 대장균의 TMP/SMX 내성률이 높은 점을 고려 시, 단순방광염 환자의 경험적 항생제 치료로 선호되는 약물계열은?", options: ["Fluoroquinolones", "Macrolides", "Sulfonamides", "Tetracyclines"], answer: 0 },
+        { guideline: "[2018 요로감염 항생제 사용지침]", text: "단순방광염 치료기간에 대한 설명은?", options: ["3일 또는 5일 미만의 단기 치료가 가능하다.", "세균학적 치료가 반드시 필요한 경우에는 3일 이상의 치료가 더 효과적일 수 있다.", "복잡성 요로감염 가능성이 있는 경우, 환자를 재평가하여 항생제 사용기간을 결정한다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[2018 요로감염 항생제 사용지침]", text: "단순 급성 신우신염 치료에 사용하는 항생제 및 치료기간은? (답가지의 항생제는 원인균에 감수성을 나타낸다고 가정)", options: ["Cefpodoxime 200 mg 1일 1회 10일", "Ciprofloxacin 100 mg 1일 2회 7일", "Levofloxacin 500 mg 1일 1회 7일", "TMP-SMX 80/400 mg 1일 2회 14일"], answer: 2 },
+        { guideline: "[2018 요로감염 항생제 사용지침]", text: "입원이 필요한 단순 급성 신우신염 치료에 적절한 초기 정주용 항균제는?", options: ["Ampicillin", "Ceftriaxone", "Rifampicin", "Tobramycin"], answer: 1 },
+        { guideline: "[2018 요로감염 항생제 사용지침]", text: "급성 세균성 전립선염 환자에게 배뇨 후 잔뇨가 확인되거나 배뇨 증상을 호소하는 경우 알파차단제 사용을 권장한다.", options: ["True", "False"], answer: 0 },
+        { guideline: "[2018 요로감염 항생제 사용지침]", text: "급성 세균성 전립샘염 치료와 관련한 설명은?", options: ["초기 경험적 항생제의 선택은 전립샘에 침투하는 능력, 항생제 내성의 국내 패턴 및 의심되는 병원균에 근거한다.", "입원이 필요한 급성 세균성 전립샘염을 치료하기 위한 항생제는 3세대 cephalosporin, 광범위 beta-lactam/beta-lactamase inhibitor 또는 Carbapenem 등을 권고한다.", "패혈증이 의심되는 중증 감염, 재발이 많았던 경우는 초기 경험적 항생제 치료를 강화하여 항생제 병합 요법을 고려한다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[2019 IDSA ASB Guideline]", text: "Define ASB in patients without indwelling catheters.", options: ["≥10^3 CFU/mL in a voided urine specimen without signs or symptoms attributable to UTI", "≥10^5 CFU/mL in a voided urine specimen without signs or symptoms attributable to UTI", "≥10^3 CFU/mL in a voided urine specimen with signs or symptoms attributable to UTI", "≥10^5 CFU/mL in a voided urine specimen with signs or symptoms attributable to UTI"], answer: 1 },
+        { guideline: "[2019 IDSA ASB Guideline]", text: "In pregnant women with ASB, of antimicrobial treatment is suggested.", options: ["One day", "2-3 days", "4-7 days", "More than 10 days"], answer: 2 },
+        { guideline: "[2019 IDSA ASB Guideline]", text: "In pregnant women with ASB, ( ) are preferred because of their safety in pregnant women.", options: ["Trimethoprim, sulfamethoxazole", "Amikacin, ceftriaxone", "Ciprofloxacin, nitrofurantoin", "Nitrofurantoin, cephalexin"], answer: 3 },
+        { guideline: "[2019 IDSA ASB Guideline]", text: "In healthy premenopausal, nonpregnant women or healthy postmenopausal women, guideline recommend screening for or treating ASB.", options: ["True", "False"], answer: 1 },
+        { guideline: "[2019 IDSA ASB Guideline]", text: "For the bacteriuric patient with fever and other systemic signs potentially consistent with a severe infection (sepsis) and without a localizing source, broad-spectrum antimicrobial therapy directed against urinary and nonurinary sources should be initiated.", options: ["True", "False"], answer: 0 },
+        { guideline: "[2019 IDSA ASB Guideline]", text: "In patients with a short-term indwelling urethral catheter (<30 days), we recommend screening for or treating ASB.", options: ["True", "False"], answer: 1 },
+        { guideline: "[2019 IDSA ASB Guideline]", text: "In patients with diabetes, we recommend screening for or treating ASB.", options: ["True", "False"], answer: 1 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "결핵균에 강력한 살균 효과를 보이며 이소니아지드와 함께 결핵치료의 가장 핵심적인 약제는?", options: ["에탐부톨", "피라진아미드", "레보플록사신", "리팜핀"], answer: 3 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "감수성결핵의 표준 처방은 4개월의 이소니아지드, 리팜핀, 피라진아미드, 에탐부톨 조합의 초기 집중치료기(initial intensive phase)와 2개월의 이소니아지드와 리팜핀 조합의 후기 유지치료기(maintenance phase)로 구성된다(2HRZE/4HR).", options: ["True", "False"], answer: 1 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "감수성결핵 환자에서 치료 시작 시 흉부X선에서 공동이 있고, 치료 ( ) 후 시행한 객담배양이 양성인 경우에는 유지 치료 기간의 연장을 고려할 수 있다.", options: ["1개월", "2개월", "3개월", "4개월"], answer: 1 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "이소니아지드 단독내성결핵은 이소니아지드 내성이 확인된 시점으로부터 리팜핀, 에탐부톨, 피라진아미드, ( )으로 6개월간 치료한다.", options: ["카바페넴", "레보플록사신", "아미카신", "프로치온아미드"], answer: 1 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "다제내성결핵 치료 처방에 사용되는 항결핵제 분류에서 Group A에 해당하는 약물은?", options: ["Bedaquiline", "Cycloserine", "Pyrazinamide", "Streptomycin"], answer: 0 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "리팜핀과 상호작용을 일으킬 수 있는 약제에 대한 설명은?", options: ["항응고제인 와파린을 복용하고 있는 환자에게 리팜핀을 추가하면 와파린의 용량을 감소해야 한다.", "스테로이드와 리팜핀을 같이 사용할 경우 스테로이드의 용량을 증량한다.", "경구피임약을 복용하고 있는 가임 여성이 리팜핀을 복용할 경우 피임에 실패할 위험이 증가하므로 다른 피임 방법을 고려하여야 한다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "재발 결핵의 치료에 대한 설명은?", options: ["과거 감수성결핵의 치료 성공 후 결핵이 재발한 경우 감수성결핵에 준하여 재치료를 시행한다.", "감수성결핵의 치료 성공 후 2년 이내에 재발한 경우 재치료 기간을 3개월 연장하는 것을 권고한다.", "재치료를 시작하면 이소니아지드 및 리팜핀의 내성 여부를 확인할 필요가 없다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 3 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "결핵 치료 중 부작용이 발생했을 때 대처방법은?", options: ["증상의 유무와 관계없이 혈청 알라닌아미노전달효소 수치가 정상 상한치의 5배 이상 증가한 경우에는 간독성이 의심되는 항결핵제 복용을 즉시 중단해야 한다.", "혈소판이 감소된 경우, 가장 가능성 있는 원인약물은 리팜핀이므로 리팜핀을 중단하고 주기적으로 혈소판 수치를 검사한다.", "에탐부톨에 의한 관절통은 투약을 계속하면서 NSAID를 투여할 수 있으나 통풍이 발생하면 에탐부톨 복용을 중단하여야 한다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 3 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "임신 및 모유 수유 시 결핵 치료에 대한 설명은?", options: ["결핵 치료 전 가임 여성에 대해 임신 여부 및 임신 계획을 확인한다.", "임신한 결핵환자의 초치료 시 이소니아지드, 리팜핀, 에탐부톨 및 피라진아미드의 표준치료 (2HREZ/4HRE) 또는 이소니아지드, 리팜핀, 에탐부톨 9개월 치료(9HRE)를 권고한다.", "일차 항결핵제로 치료하는 산모는 모유 수유를 중단할 필요가 없으며 산모와 수유부에게 이소니아지드를 사용할 시에는 피리독신을 같이 복용하여야 한다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[2025 Updates on the Treatment of Drug-Susceptible and Drug-Resistant Tuberculosis]", text: "Which of the following best describes the recommended 4-month regimen for drug-susceptible pulmonary TB in adults as an alternative to the standard 6-month regimen?", options: ["2 months of HRZE followed by 2 months of HR", "2 months of HRZE followed by 2 months of HRM", "2 months of HRZE followed by 4 months of HR", "2 months of isoniazid, rifapentine, pyrazinamide, and moxifloxacin followed by 2months of isoniazid, rifapentine, and moxifloxacin"], answer: 3 },
+        { guideline: "[2025 Updates on the Treatment of Drug-Susceptible and Drug-Resistant Tuberculosis]", text: "In children aged 3 months to 16 years with nonsevere, drug-susceptible TB, which regimen is strongly recommended over the standard 6-month therapy?", options: ["2HRZE/2HR", "2HRZE/4HR", "2HPZM/2HPM", "2HRZ/3HR"], answer: 0 },
+        { guideline: "[2025 Updates on the Treatment of Drug-Susceptible and Drug-Resistant Tuberculosis]", text: "What is the primary advantage of the BPaL regimen for treating rifampin and fluoroquinolone-resistant TB in adolescents aged 14 and older?", options: ["It includes moxifloxacin for additional coverage.", "It uses ethambutol and isoniazid to shorten treatment.", "It is a 6-month regimen recommended over traditional 15-month regimens.", "It is less toxic and requires only 3 months of therapy."], answer: 2 },
+        { guideline: "[2025 Updates on the Treatment of Drug-Susceptible and Drug-Resistant Tuberculosis]", text: "Which regimen is recommended for adolescents and adults with rifampin-resistant but fluoroquinolone-susceptible TB?", options: ["2HRZ/3HR", "2HRZE/4HR", "6-month BPaL", "6-month BPaLM"], answer: 3 }
+    ].map((q, index) => {
+        const cleanText = q.text.replace(/^\d+\.\s*/, '');
+        return { ...q, text: `${index + 1}. ${cleanText}` };
+    });
+
+    const vteData2025 = [
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "1. Which of the signs or symptoms are consistent with the diagnosis of DVT?", options: ["The patient’s right and left ankles are very swollen", "The examiner feels a palpable cord in the patient’s right leg", "The patient complains of pain in the right leg when flexing the right foot", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 4 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "2. A 45-year-old patient is diagnosed with a lower extremity DVT. The patient’s weight is 70 kg. The physician would like to treat this patient with warfarin and LMWH. Which dose would be the most appropriate?", options: ["Enoxaparin 30 mg SC q12h", "Enoxaparin 40 mg SC q24h", "Enoxaparin 50 mg SC q12h", "Enoxaparin 70 mg SC q24h", "Enoxaparin 70 mg SC q12h"], answer: 4 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "3. How long should heparin be continued in a patient with an acute DVT?", options: ["At least 24 hours until the INR is > 2 on two consecutive occasions", "At least 48 hours until the INR is > 3.5 on two consecutive occasions", "At least 1-2 days until the INR is > 2 on two consecutive occasions", "At least 4-5 days until the INR is > 2 on two consecutive occasions", "At least 7-10 days until the INR is > 3.5 on two consecutive occasions"], answer: 3 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "4. Which of the following is the most appropriate anticoagulation regimen for treatment of VTE during pregnancy?", options: ["Dabigatran", "Unfractionated heparin", "Enoxaparin", "Warfarin"], answer: 2 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "5. A 70-year-old male patient with DVT and a baseline INR of 1.1 is started on warfarin 5 mg daily on day 1 and day 2 as well as enoxaparin 80 mg SC BID. The patient has no history of malignancy, malnutrition, heart failure, alcohol abuse, or liver dysfunction. INR today (day 3) is 1.5. Which of the following reflects the best warfarin dose for day 3?", options: ["10 mg", "5 mg", "1 mg", "HOLD warfarin today"], answer: 1 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "6. SJ is a 76-year-old male (height = 175 cm, weight = 105 kg) who is diagnosed with PE. Current medications include: lisinopril, hydrochlorothiazide, atorvastatin. Labs include BUN 26 mg/dL and SCr 2.3 mg/dL. What is the best recommendation for initial parenteral anticoagulant treatment for SJ's acute PE?", options: ["Enoxaparin 100 mg subcutaneously twice daily", "Dalteparin 5,000 units subcutaneously daily", "Fondaparinux 10 mg subcutaneously daily", "Unfractionated heparin 10,000 unit bolus with 2,000 units/hr continuous infusion"], answer: 3 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "7. The benefits of LMWH over UFH include all of the following EXCEPT:", options: ["No renal adjustment necessary", "Not required routine aPTT monitoring", "Easy of administration (e.g., once or twice dosing)", "More predictable response"], answer: 0 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "8. Which of the following statements regarding counseling on warfarin therapy is correct?", options: ["Patients should avoid all green leafy vegetables while on warfarin.", "Patients should be educated on the signs and symptoms of bleeding and when to seek medical attention.", "Warfarin can be safely discontinued without consulting a healthcare provider if minor bleeding occurs.", "Consistent monitoring of INR levels is unnecessary once a stable dosage is established."], answer: 1 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "9. A patient asks about the differences between direct oral anticoagulants (DOACs) and warfarin. Which one of the following is the best counseling point to provide?", options: ["DOACs have fast onset and offset compared with warfarin.", "DOACs have less renal elimination than warfarin.", "DOACs must be taken BID compared with warfarin.", "DOACs do not require safety monitoring compared with warfarin."], answer: 0 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "10. Which of the following is the most appropriate drug to administer for bleeding due to an accidental warfarin overdose?", options: ["Idarucizumab", "Protamine sulfate", "Andexanet", "Vitamin K", "Ciraparantag"], answer: 3 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "11. This medication is a monoclonal antibody for the reversal of dabigatran.", options: ["Andexanet", "Ciraparantag", "Vitamin K", "Idarucizumab", "Protamine sulfate"], answer: 3 },
+        { guideline: "[2025 약치2 5-1 중간 VTE]", text: "12. Provide at least two important information to counsel to a patient on warfarin therapy (one should be stated regarding diet information).", options: ["- 와파린은 매일 같은 시간에 복용해야 합니다.\n- 와파린의 가장 흔하고 심각한 부작용은 출혈입니다. 따라서 부상의 위험이 있는 상황이나 활동은 피해야 합니다. 얕은 상처에서 출혈이 생기면 직접 압박하여 지혈하세요.\n- 와파린은 약물 상호작용이 매우 많습니다. 새로운 약(일반의약품, 건강보조제 포함)을 복용하기 전에는 반드시 의료진과 상의하세요.\n- 비타민K가 많은 음식(녹색 잎채소 등)은 와파린 효과에 영향을 줄 수 있습니다. 이런 음식을 아예 피할 필요는 없지만, 섭취량을 일정하게 유지하는 것이 중요합니다.\n- 알코올은 출혈 위험을 증가시키고 와파린 치료에 영향을 줄 수 있습니다. 하루 1-2잔 정도로 절제해서 마시고, 폭음은 피해야 합니다.\n- 다음과 같은 증상이 나타나면 의료진에게 연락하세요; 베인 상처, 찰과상에서 지속적인 출혈, 소변에서 혈액이 보일 때, 대변에 혈액이 섞여 나올 때, 지속적인 코피, 해당 부위(혈전이 있는 팔/다리)의 부종이나 통증 증가"], answer: 0, type: "essay" }
+    ];
+
+    const finalData2025 = [
+        { guideline: "[2025 기말]", text: "Which of the following laboratory values is suggestive of an infection?", options: ["Temperature 38.2℃", "HR> 126bpm", "WBC 21 X 103/mm3; bands 10%", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 5 },
+        { guideline: "[2025 기말]", text: "Empirical antibiotic therapy should be based on:", options: ["Likely pathogens for the site of infection", "Host characteristics", "Drug’s expected activity against the pathogen", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 6 },
+        { guideline: "[2025 기말]", text: "Which of the following statements regarding synergy and combination antimicrobial therapy is true?", options: ["An example of synergy is the use of an aminoglycoside with a penicillin for treating enterococcal endocarditis.", "Combining antimicrobials is always recommended to prevent resistance.", "There is strong evidence supporting synergistic combinations for all gram-negative infections.", "The combination of any two antimicrobials will always result in synergistic effects.", "Synergistic combinations are only used for fungal infections."], answer: 0 },
+        { guideline: "[2025 기말]", text: "___________is a multidisciplinary program that promotes the appropriate use of antimicrobials, improves patient outcomes, reduces microbial resistance, and decreases the spread of infections caused by multidrug-resistant organisms", options: ["Antimicrobial stewardship", "Anticoagulation service", "Drug-related problem", "Medication reconciliation", "Respond to code blue"], answer: 0 },
+        { guideline: "[2025 기말]", text: "Change from parenteral to oral therapy may be considered based on which of the following factor(s)?", options: ["Tolerating oral diet", "Hemodynamically stable", "Availability of intravenous administration equipment", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 3 },
+        { guideline: "[2025 기말]", text: "The most appropriate therapy for a young adult(weighing 70kg) diagnosed with GABHS pharyngitis and has a penicillin allergy(anaphylaxis) is:", options: ["Azithromycin 500 mg PO once daily for one day, then 250 mg once daily for 4 days", "Amoxicillin 500 mg PO three times daily for 10 days", "Levofloxacin 750 mg PO daily for 10 days", "Penicillin V 500 mg PO twice daily for 10 days", "Tetracycline 500 mg PO BID for 10 days"], answer: 0 },
+        { guideline: "[2025 기말]", text: "A 68-year-old man presents with a 2-week history of persistent nasal congestion and sinus pain. He was hospitalized 2 months ago for a skin abscess and received a 10-day course of clindamycin. Which of the following is considered a first-line recommendation for the treatment of this episode of acute bacterial rhinosinusitis?", options: ["Amoxicillin-clavulanate", "Clarithromycin", "Levofloxacin", "Amoxicillin", "Doxycycline"], answer: 0 },
+        { guideline: "[2025 기말]", text: "Which of the following is the most prevalent complication of otitis media?", options: ["Fluctuating or persistent hearing loss", "Perforation of the tympanic membrane", "Development of cholesteatomas", "Chronic infection of the middle ear", "None of the above"], answer: 0 },
+        { guideline: "[2025 기말]", text: "Which of the following is suggestive of bacterial versus viral rhinosinusitis?", options: ["Persistent symptoms for ten days or more", "Worsening of symptoms after seven days", "Lack of symptomatic response to nonprescription nasal decongestants", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 3 },
+        { guideline: "[2025 기말]", text: "Which dose of amoxicillin is recommended for acute otitis media?", options: ["10-20 mg/kg/day in two divided doses", "40-50 mg/kg/day in two divided doses", "60-70 mg/kg/day in two divided doses", "80-90 mg/kg/day in two divided doses"], answer: 3 },
+        { guideline: "[2025 기말]", text: "Aspirin is the mainstay of treatment and effective analgesics for mild to moderate pain in children with acute otitis media.", options: ["True", "False"], answer: 1 },
+        { guideline: "[2025 기말]", text: "A 48-year old with asthma and ESRD requiring hemodialysis presents to his primary care provider with worsening SOB, fever, and WBC 13 x 103 cells/mm3. A chest radiograph is performed and is concerning for pneumonia. Which of the following is an appropriate pharmacotherapy regimen for this patient?", options: ["Ciprofloxacin", "Amoxicillin + doxycycline", "Azithromycin", "Amoxicillin/clavulanic acid + azithromycin"], answer: 3 },
+        { guideline: "[2025 기말]", text: "Which of the following pathogens is considered a common cause of community-acquired pneumonia and should be targeted by empiric antibiotic therapy?", options: ["Mycobacterium tuberculosis", "Legionella pneumophila", "Streptococcus pneumoniae", "Pseudomonas aeruginosa"], answer: 2 },
+        { guideline: "[2025 기말]", text: "Which of the following is NOT a risk factor for multidrug-resistant (MDR) ventilator-associated pneumonia (VAP)?", options: ["Receipt of intravenous antibiotics in the past 90 days", "Acute respiratory distress syndrome (ARDS) preceding VAP onset", "Receipt of a blood transfusion in the past 90 days", "Receipt of renal replacement therapy (e.g., dialysis) prior to VAP onset", "Hospitalization for 5 or more days prior to VAP onset"], answer: 2 },
+        { guideline: "[2025 기말]", text: "A 66- year old woman with HAP in ICUs improves and is transferred to a regular floor. She cannot remember receiving vaccinations. Which is the best vaccination recommendation for this patient?", options: ["This patient needs no vaccinations", "This patient should receive the pneumococcal vaccine now and the influenza vaccine in the fall.", "This patient should receive the influenza vaccine in the fall, but pneumococcal vaccine is unnecessary.", "This patient should receive the pneumococcal vaccine now, but influenza vaccine is not recommended."], answer: 1 },
+        { guideline: "[2025 기말]", text: "Select antibiotic with antipseudomonal activity", options: ["Clindamycin", "Cefepime", "Ertapenem", "Linezolid"], answer: 1 },
+        { guideline: "[2025 기말]", text: "A 66-year-old woman underwent a CABG 8 days ago and has been on a ventilator in the SICU. Her temperature is now rising, and a tracheal aspirate shows many WBCs and gram-negative rods. Her medical history includes CAD with a MI 2 years ago, COPD, 기말, and HTN. Which is the best empiric therapy for this patient?", options: ["Piperacillin/tazobactam 4.5g V every 6 hours", "Levofloxacin 750mg/day IV, Linezolid 600mg IV every 12 hours", "Ceftriaxone 1g/day IV, Gentamicin 480mg IV every 24 hours, linezolid", "Cefepime 2g IV every 12 hours, tobramycin 480mg I every 24 hours, vancomycin"], answer: 3 },
+        { guideline: "[2025 기말]", text: "Empiric treatment options for MRSA include:", options: ["Vancomycin 15 mg/kg every 12 h, adjust based on levels", "Linezolid 600mg every 24 h", "Imipenem 500mg every 6h", "Cefepime 2g every 8h"], answer: 0 },
+        { guideline: "[2025 기말]", text: "Which of the following is considered a first-line antibiotic therapy for ESBL E.coli pneumonia?", options: ["cefepime", "Ertapenem", "Tobramycin", "Ceftriaxone"], answer: 1 },
+        { guideline: "[2025 기말]", text: "Which type of bacteria are aminoglycosides most active against?", options: ["Gram-positive bacteria", "Gram-negative bacteria", "Anaerobic bacteria", "Atypical bacteria"], answer: 1 },
+        { guideline: "[2025 기말]", text: "Which of the following results is most indicative that there is significant bacteria in the urine", options: ["hematuria", "10 WBC/mm3(10x106/L)", "More than 10^5 CFU/mL", "Leukocyte esterase positive"], answer: 2 },
+        { guideline: "[2025 기말]", text: "A 28-year-old woman presents to the clinic with a 2-day history of dysuria, frequency, and urgency. She has no significant medical history, and the only drug she takes is oral contraceptives. Which is the best empiric therapy for this patient", options: ["Nitrofurantoin ER PO 100mg BID for 3 5 days.", "Ciprofloxacin PO 500mg BID for 7 3 days.", "TMP/SMX DS BID for 3 days.", "Cephalexin 500mg PO QID for 3 days."], answer: 2 },
+        { guideline: "[2025 기말]", text: "A 30-year-old woman is admitted to the ICU with severe pyelonephritis. She has no known drug allergies. What would be the most appropriate empiric treatment?", options: ["Trimethoprim-sulfamethoxazole double strength, 1 tablet orally twice daily for 3 days", "Nitrofurantoin 100mg orally twice daily for 7 days", "Ciprofloxacin 400mg IV twice daily for 3 days, followed by 500mg orally twice daily for 11 days", "Ciprofloxacin 500mg orally twice daily for 3 days"], answer: 2 },
+        { guideline: "[2025 기말]", text: "A 54-year-old man is diagnosed with acute bacterial prostatitis for the first time. He is an otherwise healthy male with a documented allergy to trimethoprim/sulfamethoxazole. Which of the following is the most appropriate therapy for this patient?", options: ["Ciprofloxacin 500mg orally twice daily for 3 days", "Trimethoprim/sulfamethoxazole double strength, one tablet orally twice daily for 4 weeks", "Ciprofloxacin 500mg orally twice daily for 4 weeks", "Nitrofurantoin 100mg orally twice daily for 5 days"], answer: 2 },
+        { guideline: "[2025 기말]", text: "This medication is(are) NOT effective for the treatment of UTIs because it(they) do(es) not achieve adequate concentrations in the urine.", options: ["Ciprofloxacin", "Levofloxacin", "Moxifloxacin", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 2 },
+        { guideline: "[2025 기말]", text: "In pregnant women with UTI, sulfonamides should not be administered during the third trimester because of the possible development of _____________.", options: ["Grey baby syndrome", "Kernicterus and hyperbilirubinemia", "impairment of neuronal defects", "inhibition of cartilage and bone development in the newborn"], answer: 1 },
+        { guideline: "[2025 기말]", text: "A 40-year-old man had a positive blood test to detect Mycobacterium tuberculosis at a visit last year. The patient’s chest radiography today is normal. Which of the following would best treat latent TB in this patient?", options: ["Isoniazid 300 mg PO daily for 9 months", "Isoniazid 300 mg PO daily plus rifampin 600 mg PO daily for 8 weeks", "Isoniazid 900 mg PO weekly plus rifapentine 900 mg PO weekly for 12 weeks", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 0 },
+        { guideline: "[2025 기말]", text: "A 49-year-old woman (height 170cm, weight 100kg) reports new symptoms of cough and night sweats. A chest radiography reveals an upper lobe infiltrate consistent with TB. The patient has no comorbidities. Laboratory test results include SCr 0.9 mg/dL and ALT 20 IU/L. Which one of the following is best to recommend for this patient’s initial therapy?", options: ["Isoniazid 300mg, rifampin 600mg, pyrazinamide 2500mg, ethambutol 1600mg daily for 12 weeks", "Isoniazid 300mg, rifampin 600mg, pyrazinamide 1500mg, ethambutol 1200mg daily for 8 weeks", "Isoniazid 900mg, rifampin 600mg, pyrazinamide 2000mg, ethambutol 1600mg twice weekly for 6 weeks", "Isoniazid 300mg, rifampin 600mg, pyrazinamide 1500mg, ethambutol 1200mg daily for 2 weeks"], answer: 1 },
+        { guideline: "[2025 기말]", text: "BC is a 33-year-old woman who has a positive PPD and a cavitation on chest radiography. She has started TB therapy with isoniazid, rifampin, and ethambutol. Isoniazid and rifampin have a risk of causing _________ necessitating ________ monitoring.", options: ["Hepatotoxicity, ALT", "Nephrotoxicity, SCr", "Optic neuritis, eye exam", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 0 },
+        { guideline: "[2025 기말]", text: "List one anti-TB medication that would cause pruritus and orange discoloration of her urine, sputum, sweat, and tears.", options: ["Isoniazid", "Rifampin", "Pyrazinamide", "Ethambutol"], answer: 1 },
+        { guideline: "[2025 기말]", text: "A 68-years-old male with TB has been on a four-drug anti-TB medication(rifampin, isoniazid, pyrazinamide, and ethambutol) regimen for 5 weeks. He complains that his right big toe has been painful for 2 weeks and recently he has a hard time walking around the house. On examination, the right big toe is tender and red. Laboratory testing shows an elevated uric acid level and gout is suspected. List one anti-TB medication that is most likely associated with this adverse effect.", options: ["Isoniazid", "Rifampin", "Pyrazinamide", "Ethambutol"], answer: 2 },
+        { guideline: "[2025 기말]", text: "A woman (height 165 cm, weight 70 kg) is beginning the continuation phase of active TB. Because the patient has had adherence issues in the past, the medications will be administered by DOT. Which one of the following is the most appropriate regimen for this patient?", options: ["Isoniazid 600 mg, rifampin 300 mg PO once daily for 26 weeks", "Isoniazid 900 mg, rifapentine 900 mg PO once weekly for 26 weeks", "Isoniazid 900 mg, rifampin 600 mg PO twice weekly for 18 weeks", "Isoniazid 300 mg, rifampin 600 mg, ethambutol 1200mg, pyrazinamide 1500mg PO once daily for 8 weeks"], answer: 2 },
+        { guideline: "[2025 기말]", text: "Which of the following medications is a potential choice for the treatment of latent tuberculosis infection in a patient who is unable to tolerate isoniazid?", options: ["Pyrazinamide", "Streptomycin", "Ethambutol", "Rifampin"], answer: 3 },
+        { guideline: "[2025 기말]", text: "Which of the following medications is recommended from the treatment of MDR-TB?", options: ["Bedaquiline and linezolid", "Levofloxacin and ethambutol", "Isoniazid and rifampin", "Rifampin and pyrazinamide"], answer: 0 },
+        { guideline: "[2025 기말]", text: "FE is a 9-month-old girl who presents to the pediatrician with a 2-day history of high fever(39.5), lethargy, irritability, poor appetite, and vomiting. PE reveals an ill-appearing infant, temperature 39.2, with a diffuse petechial rash. FE was born at 38 weeks gestation to a mother positive for group B Streptococci . FE has received vaccinations according to the recommended schedule. She is sent to the ED for further work-up for meningitis. Which one of the following bacteria is the most likely cause of meningitis in FE?", options: ["Escherichia coli", "Group B streptococcus", "Neisseria meningitidis", "Staphylococcus aureus", "All of the above"], answer: 2 },
+        { guideline: "[2025 기말]", text: "FE is a 9-month-old girl who presents to the pediatrician with a 2-day history of high fever(39.5), lethargy, irritability, poor appetite, and vomiting. PE reveals an ill-appearing infant, temperature 39.2, with a diffuse petechial rash. FE was born at 38 weeks gestation to a mother positive for group B Streptococci . FE has received vaccinations according to the recommended schedule. She is sent to the ED for further work-up for meningitis. Provide the best empiric antimicrobial therapy to initiate in FE.", options: ["Cefotaxime and vancomycin", "Cefepime and vancomycin", "Cefotaxime, vancomycin, and ampicillin", "Ceftriaxone, vancomycin, and ampicillin"], answer: 0 },
+        { guideline: "[2025 기말]", text: "In children <2 years of age and adults >50 years of age, empiric coverage of the following pathogen is recommended:", options: ["Listeria monocytogens", "Mycoplasma pneumoniae", "Neisseria meningitidis", "Legionella pneumophila"], answer: 0 },
+        { guideline: "[2025 기말]", text: "According to the infectious Diseases Society of America, the recommended treatment regimen for a 60-year-old patient with suspected acute, community-acquired bacterial meningitis consists of:", options: ["Ceftriaxone, meropenem, and vancomycin", "Ceftriaxone, ampicillin, and gentamicin", "Cefazolin, vancomycin, and levofloxacin", "Ceftriaxone, ampicillin, and vancomycin"], answer: 3 },
+        { guideline: "[2025 기말]", text: "Which of the following immunizations has the most impact on reduction of the incidence of meningitis?", options: ["influenza vaccine", "Herpes zoster vaccination", "Pneumococcal vaccination", "Streptococcal vaccination"], answer: 2 },
+        { guideline: "[2025 기말]", text: "Which of the following antimicrobials can be indicated for managing meningitis postexposure prophylaxis?", options: ["Ceftriaxone", "Ciprofloxacin", "IV immunoglobulin", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 3 },
+        { guideline: "[2025 기말]", text: "Which of the following pathogens is most common cause of infection diarrhea in children?", options: ["Vibrio cholera", "Campylobacter jejuni", "Yersinia enterocolitica", "Escherichia coli", "Rotavirus"], answer: 4 },
+        { guideline: "[2025 기말]", text: "Which of the following statement(s) is(are) true regarding infectious diarrhea?", options: ["Antimotility drugs should be used in patients with toxin-mediated dysenteric diarrhea.", "PPIs may be associated with an increased risk of Clostridium difficile-associated diarrhea.", "The cornerstone of management for all Gl infections is to prevent dehydration by correcting fluid and electrolyte imbalances.", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 4 },
+        { guideline: "[2025 기말]", text: "Which of the following statements regarding the treatment of E.coli-related infectious diarrhea is true?", options: ["Initial treatment should include appropriate hydration with low-osmolar or isotonic fluid replacement.", "The use of loperamide could potentially increase diarrheal symptoms due to prolonged exposure to bacterial toxin.", "Using fluoroquinolone agents for treatment of this infection is appropriate when bloody stools are present and serotype is undetermined.", "1, 2", "2, 3", "1, 3", "1, 2, 3"], answer: 3 },
+        { guideline: "[2025 기말]", text: "A 60-year-old man presents with a 2-day history of bloody diarrhea that began after eating eggs. A stool culture is positive for nontyphoidal Salmonella. He is allergic to fluoroquinolones and sulfa. His medical history is significant for HTN, dyslipidemia, type 2 DM, and ESRD. Which one of the following is the best treatment option for this patient?", options: ["Supportive care only", "Azithromycin 500mg orally daily for 7 days", "Cefazolin 1g intravenously every 8 hours for 7 days", "Levofloxacin 750mg orally daily for 7 days", "Trimethoprim/sulfamethoxazole 160mg/800mg PO twice daily for 3 days"], answer: 1 },
+        { guideline: "[2025 기말]", text: "AB is a 40-year-old man who comes to the clinic with a 2-day history of severe diarrhea (> 6 loose stools a day) and abdominal cramping.He is currently being treated for a cellulitis and is on day 13 of a 14-day course of clindamycin. His cellulitis has completely cleared up, but he has been feeling bad for the past 2 days. A PCR comes back positive for C. difficile toxins A and B. Which of the following is the first step in the management of AB?", options: ["Discontinue clindamycin", "Start metronidazole 500 mg orally three times/day", "Start fidaxomicin 200 mg orally two times/day", "Start vancomycin 500 mg in 100 mL NS as a retention enema q6h"], answer: 0 },
+        { guideline: "[2025 기말]", text: "When should antibiotics be considered for the treatment of traveler’s diarrhea?", options: ["As the first-line treatment for all cases", "Only in cases with severe symptoms or high-risk individuals", "Only in cases with bloody diarrhea", "Antibiotics are not recommended for traveler’s diarrhea"], answer: 1 },
+        { guideline: "[2025 기말]", text: "Which class of antibiotics is commonly recommended for the treatment of moderate to severe traveler’s diarrhea?", options: ["Penicillins", "Cephalosporins", "Fluoroquinolones", "Aztreonam"], answer: 2 },
+        { guideline: "[2025 기말]", text: "Which of the following is advantage of fidaxomicin for the treatment clostridium difficille ?", options: ["Decreased cost effectiveness", "Shorter duration of therapy", "Decreased recurrence compared to vancomycin", "Superior rates of clinical cure compared to vancomycin"], answer: 2 },
+        { guideline: "[2025 기말]", text: "A patient presents with an abscess in the abdomen, most likely associated with a perforated diverticulum in the colon. Which of the following would be the most appropriate initial antimicrobial regimen?", options: ["Ampicillin-sulbactam", "Ceftriaxone plus metronidazole", "Clindamycin", "Gentamicin plus metronidazole"], answer: 1 },
+        { guideline: "[2025 기말]", text: "A 21-year-old otherwise healthy female college student presents to the clinic with a 4-day history of fever, myalgia, dry cough, and malaise. She is diagnosed with influenza A infection. What is the most appropriate treatment recommendation for this patient? *Please include the drug name, dose, route, frequency, and duration in your answer.*", options: ["이 환자는 21세의 건강한 외래 환자로, 발열, 근육통, 마른기침, 권태감 등 전형적인 influenza 증상은 있지만 입원이 필요한 상태, 폐렴, 호흡부전, 중증, 임신, 고령 등 고위험군에 해당하는 정보가 없기 때문에 uncomplicated influenza A로 판단된다.\n2018 IDSA influenza guideline에 따르면 고위험군이 아닌 외래 환자에서는 증상 발생 후 2일 이내 내원한 경우 항바이러스제 치료를 고려할 수 있다고 되어 있다. 이 환자는 증상 발현 4일째 내원하였고 고위험군에 해당하지 않으나 인플루엔자 A 감염이 확인된 상태이므로 48시간 이후임에도 항바이러스제 투여를 고려할 수 있다. 이 경우 48시간 이내 투여 시와 비교하여 임상적 이득이 다소 제한적일 수 있음을 고려해야 한다.\n따라서 Oseltamivir 75mg을 경구로 1일 2회, 5일간 투여하는 것이 권고된다. 대체 약제로는 흡입용 Zanamivir 10mg을 1일 2회 5일간 투여하거나, Peramivir 600mg을 정맥으로 단회 투여하는 방법도 고려할 수 일다."], answer: 0, type: "essay" },
+        { guideline: "[2025 기말]", text: "Discuss the clinical situations in which adjunctive corticosteroids are indicated in the management of meningitis. In your answer, include the types of meningitis for which corticosteroid use is recommended, as well as the rationale for their use, including the specific drug, dosage, and timing.", options: ["세균성 수막염(특히 소아의 H.influenzae와 성인의 S.pneumoniae 감염)에서 항생제 투여 후 발생하는 과도한 염증반응(TNF, IL-1 증가)을 억제하기 위해 보조적으로 사용된다.\n- 약물은 Dexamethasone을 사용하며, 용량은 0.15 mg/kg IV every 6 hours for 2-4 days 이다.\n- 투여 시점은 첫 항생제 투여 10-20분 전 또는 첫 항생제와 동시에 투여해야 한다."], answer: 0, type: "essay" },
+        { guideline: "[2025 기말]", text: "A patient is diagnosed with Clostridioides difficile infection (CDI) and has a white blood cell (WBC) count of 17,500 cells/mm3 (17.5 × 109/L), which may indicate a severe infection. The prescribed regimen is: Vancomycin 250 mg IV every 12 hours. Identify and explain any potential drug-related problems (DRPs) associated with this prescription. Additionally, provide the correct drug regimen according to current clinical guidelines.", options: ["- 처방된 Vancomycin IV 제제는 장 내강으로 도달하지 않아 CDI 치료에 적절하지 않으므로 PO(경구)로 변경해야 한다.\n- 250mg q12h는 표준 용량 및 투여간격이 아니다.\n- 현재 환자는 Severe CDI에 해당하므로, 권장 치료법인 Fidaxomicin 200mg PO bid for 10 days를 사용하거나 Alternative로 Vancomycin 125mg PO qid for 10 days를 투여해야 한다."], answer: 0, type: "essay" },
+        { guideline: "[2025 기말]", text: "Provide three important points to counsel patients who are taking antibiotics.", options: ["- 증상이 호전되어도 처방된 용량과 기간에 맞게 끝까지 복용해야 내성을 예방할 수 있다.\n- 복용 중 오심, 구토, 설사, 피부 발진 등의 이상 반응이 나타나면 즉시 의료진에게 알려야 한다.\n- 약물마다 식전/식후 복용 여부 및 타 약물(우유, 제산제 등)과의 상호작용이 다르므로 복용법을 잘 지켜야 한다.\n- 복용을 잊었을 때 한 번에 두 배의 용량을 먹지 않는다.\n- 남은 약을 임의로 타인과 나누어 먹지 않는다."], answer: 0, type: "essay" }
+    ].map((q, index) => {
+        return { ...q, text: `${index + 1}. ${q.text}` };
+    });
+
+    const finalData2024_no_dup = [
+        { guideline: "[2024 기말 (25 중복 제외)]", text: "The minimum bactericidal concentration is defined as the lowest antimicrobial concentration that prevents visible growth of an organism after approximately 24 hours of incubation in a specified growth medium", options: ["True", "False"], answer: 1 },
+        { guideline: "[2024 기말 (25 중복 제외)]", text: "A 4-year-old boy receives a diagnosis of his fourth case of otitis media within 12 months. Which is the best intervention at this point?", options: ["Long-term antibiotic prophylaxis", "Inserting tympanostomy tubes", "Administering high-dose amoxicillin", "No antibiotic therapy warranted"], answer: 1 },
+        { guideline: "[2024 기말 (25 중복 제외)]", text: "A 46-year-old woman presents to the clinic with purulent nasal discharge, nasal and facial congestions, headaches, fever, and pain. Her symptoms began about 10 days ago, improved after about 4 days, and then worsened again a few days later. Which is the best empiric therapy for this patient?", options: ["Cefpodoxime", "Clindamycin", "Amoxicillin/clavulanate", "No antibiotic therapy needed because this is a typical viral infection"], answer: 2 },
+        { guideline: "[2024 기말 (25 중복 제외)]", text: "A 39-year-old woman with no significant past medical history presents to her primary care provider. Her allergies include cefpodoxime (nausea). Her physician asks you what the best option is to treat her pneumonia. The local antibiogram shows a S. pneumoniae resistance of 30.7% to clarithromycin.", options: ["Azithromycin", "Amoxicillin", "Doxycycline", "Vancomycin"], answer: 2 },
+        { guideline: "[2024 기말 (25 중복 제외)]", text: "Which of the following medications is a neuraminidase inhibitor commonly used for the treatment of influenza?", options: ["Amantadine", "Ribavirin", "Oseltamivir", "Zanamivir"], answer: 2 },
+        { guideline: "[2024 기말 (25 중복 제외)]", text: "When should antiviral treatment be initiated for influenza virus infection in otherwise healthy adults?", options: ["Within 12 hours of symptom onset", "Within 24 hours of symptom onset", "Within 48 hours of symptom onset", "Within 72 hours of symptom onset"], answer: 2 }
+    ].map((q, index) => {
+        const cleanText = q.text.replace(/^\d+\.\s*/, '');
+        return { ...q, text: `${index + 1}. ${cleanText}` };
+    });
+
+    // ★ 중간고사용 퀴즈 6가지만 포함하도록 수정된 quizLibrary
+    const quizLibrary = [
+        {
+            id: 'past_2022_2024',
+            title: '2022-2024 약물치료학2 5-1 중간 (통합 족보)',
+            data: combined22_24
+        },
+        {
+            id: 'midterm_2025_lipid_included',
+            title: '2025년 약물치료학2 5-1 중간 (2026 대비 VTE 제외, CV 퀴즈 지질 포함)',
+            data: midterm2025_with_lipid
+        },
+        {
+            id: 'midterm_2025_revised',
+            title: '2025년 약물치료학2 5-1 중간 (2026 대비 VTE 제외)',
+            data: midterm2025_revised
+        },
+        {
+            id: 'midterm_2025',
+            title: '2025 약물치료학2 5-1 중간 (전체 문항)',
+            data: midterm2025
+        },
+        {
+            id: 'cv_2024_revised',
+            title: '2024 약물치료학2 CV 퀴즈 (2026 CV 대비 지질 제외)',
+            data: refinedData2026
+        },
+        {
+            id: 'cv_2024',
+            title: '2024 약물치료학2 CV 퀴즈',
+            data: masterData2024
+        }
+    ];
+
+    let currentOriginalData = []; 
+    let activeQuizData = [];      
+    let currentQuestion = 0;
+    let userAnswers = [];
+    let flaggedQuestions = [];
+    let isEssayMode = false;
+
+    function showDashboard() {
+        document.getElementById('dashboard-container').style.display = 'block';
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('results-container').style.display = 'none';
+        document.getElementById('app-sidebar').style.display = 'none';
+        document.getElementById('breadcrumb-current').innerText = '퀴즈 목록';
+        document.getElementById('mode-indicator').style.display = 'none';
+
+        const grid = document.getElementById('quiz-grid');
+        grid.innerHTML = '';
+        
+        quizLibrary.forEach(quiz => {
+            const card = document.createElement('div');
+            card.className = 'quiz-card';
+            card.innerHTML = `
+                <h3>${quiz.title}</h3>
+                <p>총 ${quiz.data.length}문항</p>
+                <button class="btn btn-primary" onclick="startQuiz('${quiz.id}')">이 퀴즈 풀기</button>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function startQuiz(quizId) {
+        const selectedQuiz = quizLibrary.find(q => q.id === quizId);
+        currentOriginalData = selectedQuiz.data;
+        activeQuizData = JSON.parse(JSON.stringify(currentOriginalData));
+        
+        document.getElementById('breadcrumb-current').innerText = selectedQuiz.title;
+        document.getElementById('mode-indicator').style.display = 'inline';
+        document.getElementById('dashboard-container').style.display = 'none';
+        document.getElementById('results-container').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'block';
+        document.getElementById('app-sidebar').style.display = 'flex';
+        
+        isEssayMode = false;
+        document.getElementById('mode-toggle-btn').innerText = '📝 서술형 모드 켜기';
+        document.getElementById('mode-indicator').innerText = '[객관식 모드]';
+        document.getElementById('mode-indicator').style.color = '#0d6efd';
+
+        resetQuizState();
+        init();
+    }
+
+    function resetQuizState() {
+        currentQuestion = 0;
+        userAnswers = new Array(activeQuizData.length).fill(null);
+        flaggedQuestions = new Array(activeQuizData.length).fill(false);
+    }
+
+    function toggleMode() {
+        if (!confirm('모드를 변경하면 답안이 초기화됩니다. 계속하시겠습니까?')) return;
+        isEssayMode = !isEssayMode;
+        const toggleBtn = document.getElementById('mode-toggle-btn');
+        const modeIndicator = document.getElementById('mode-indicator');
+        
+        if (isEssayMode) {
+            toggleBtn.innerText = '🔘 객관식 모드로 돌아가기';
+            modeIndicator.innerText = '[서술형 모드]';
+            modeIndicator.style.color = '#dc3545';
+        } else {
+            toggleBtn.innerText = '📝 서술형 모드 켜기';
+            modeIndicator.innerText = '[객관식 모드]';
+            modeIndicator.style.color = '#0d6efd';
+        }
+        resetQuizState();
+        init();
+    }
+
+    function shuffleQuiz() {
+        if (!confirm('문항과 보기를 섞으시겠습니까?')) return;
+        for (let i = activeQuizData.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [activeQuizData[i], activeQuizData[j]] = [activeQuizData[j], activeQuizData[i]];
+        }
+        activeQuizData.forEach(q => {
+            const hasCombo = q.options.some(opt => /^\d+(,\s*\d+)+$/.test(opt));
+            const isTF = q.options.length === 2 && q.options.includes("True");
+            if (!hasCombo && !isTF && q.options.length > 1 && q.type !== 'essay') {
+                const correctText = q.options[q.answer];
+                q.options.sort(() => Math.random() - 0.5);
+                q.answer = q.options.indexOf(correctText);
+            }
+        });
+        resetQuizState();
+        init();
+    }
+
+    function resetOrder() {
+        activeQuizData = JSON.parse(JSON.stringify(currentOriginalData));
+        resetQuizState();
+        document.getElementById('results-container').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'block';
+        document.getElementById('app-sidebar').style.display = 'flex';
+        init();
+    }
+
+    function init() {
+        renderNavGrid();
+        renderQuestion(currentQuestion);
+    }
+
+    function renderNavGrid() {
+        const grid = document.getElementById('nav-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < activeQuizData.length; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'nav-btn';
+            if (i === currentQuestion) btn.classList.add('active');
+            if (userAnswers[i] !== null && userAnswers[i] !== '') btn.classList.add('answered');
+            if (flaggedQuestions[i]) btn.classList.add('flagged');
+            btn.innerText = i + 1;
+            btn.onclick = () => { currentQuestion = i; renderQuestion(currentQuestion); };
+            grid.appendChild(btn);
+        }
+    }
+
+    function renderQuestion(index) {
+        const q = activeQuizData[index];
+        document.getElementById('q-number-display').innerText = `Question ${index + 1}`;
+        const hasAns = userAnswers[index] !== null && userAnswers[index] !== '';
+        document.getElementById('q-status-display').innerText = hasAns ? 'Complete' : 'Not yet answered';
+        document.getElementById('flag-btn-display').innerHTML = flaggedQuestions[index] ? '🚩 Remove flag' : '🚩 Flag question';
+        
+        let guidelineText = q.guideline || '';
+        if (q.type === 'essay' && !isEssayMode) {
+            guidelineText += ' <span style="color:#dc3545;">[이 문제는 서술형 주관식입니다]</span>';
+        }
+        document.getElementById('guideline-display').innerHTML = guidelineText;
+        
+        document.getElementById('q-text-display').innerText = q.text;
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        if (isEssayMode || q.type === 'essay') {
+            const area = document.createElement('textarea');
+            area.className = 'essay-input';
+            area.placeholder = '여기에 서술형 답안을 직접 입력하세요...';
+            area.value = userAnswers[index] || '';
+            area.oninput = (e) => {
+                userAnswers[currentQuestion] = e.target.value.trim() || null;
+                renderNavGrid();
+            };
+            container.appendChild(area);
+        } else {
+            q.options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                const rad = document.createElement('input');
+                rad.type = 'radio'; rad.name = 'opt'; rad.id = 'o'+i;
+                rad.checked = userAnswers[index] === i;
+                rad.onchange = () => { userAnswers[currentQuestion] = i; renderNavGrid(); };
+                const lab = document.createElement('label');
+                lab.htmlFor = 'o'+i; lab.innerText = `${i+1}. ${opt}`;
+                div.append(rad, lab);
+                container.appendChild(div);
+            });
+        }
+        document.getElementById('prev-btn').style.visibility = index === 0 ? 'hidden' : 'visible';
+        const next = document.getElementById('next-btn');
+        next.innerText = index === activeQuizData.length - 1 ? 'Finish attempt ...' : 'Next page';
+        next.onclick = index === activeQuizData.length - 1 ? showResults : () => { currentQuestion++; renderQuestion(currentQuestion); };
+    }
+
+    function clearChoice() { userAnswers[currentQuestion] = null; renderQuestion(currentQuestion); }
+    function changeQuestion(s) { currentQuestion += s; renderQuestion(currentQuestion); }
+    function toggleFlag() { flaggedQuestions[currentQuestion] = !flaggedQuestions[currentQuestion]; renderQuestion(currentQuestion); }
+
+    function retryIncorrect() {
+        const incorrect = activeQuizData.filter((q, i) => {
+            if (isEssayMode || q.type === 'essay') {
+                const u = (userAnswers[i] || '').toLowerCase().replace(/\s+/g, '');
+                const c = q.options[q.answer].toLowerCase().replace(/\s+/g, '');
+                return u !== c;
+            }
+            return userAnswers[i] !== q.answer;
+        });
+        if (incorrect.length === 0) return alert('모두 정답입니다!');
+        activeQuizData = incorrect;
+        resetQuizState();
+        document.getElementById('results-container').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'block';
+        document.getElementById('app-sidebar').style.display = 'flex';
+        init();
+    }
+
+    function showResults() {
+        if (!confirm('제출하시겠습니까?')) return;
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('app-sidebar').style.display = 'none';
+        document.getElementById('results-container').style.display = 'block';
+        
+        const hasEssay = isEssayMode || activeQuizData.some(q => q.type === 'essay');
+        document.getElementById('essay-warning').style.display = hasEssay ? 'block' : 'none';
+        
+        const list = document.getElementById('results-list');
+        list.innerHTML = '';
+        let score = 0;
+
+        activeQuizData.forEach((q, i) => {
+            let correct = false;
+            let uText = '응답 안 함';
+            const cText = q.options[q.answer];
+            
+            if (isEssayMode || q.type === 'essay') {
+                const u = (userAnswers[i] || '').toLowerCase().replace(/\s+/g, '');
+                const c = cText.toLowerCase().replace(/\s+/g, '');
+                correct = u !== '' && u === c;
+                uText = userAnswers[i] || '응답 안 함';
+                uText = uText.replace(/\n/g, '<br>');
+            } else {
+                correct = userAnswers[i] === q.answer;
+                uText = userAnswers[i] !== null ? q.options[userAnswers[i]] : '응답 안 함';
+            }
+            
+            if (correct) score++;
+            
+            const item = document.createElement('div');
+            item.className = `result-item ${correct ? 'correct' : 'incorrect'}`;
+            
+            let statusHTML = `<span class="status-badge ${correct?'status-correct':'status-incorrect'}">${correct?'✔ 정답':'✘ 오답'}</span>`;
+            if (q.type === 'essay' && !isEssayMode) {
+                statusHTML = `<span class="status-badge status-correct" style="color: #0d6efd;">📝 제출 완료 (직접 채점)</span>`;
+                if (userAnswers[i] && userAnswers[i].trim() !== '') score++; 
+            }
+
+            item.innerHTML = `
+                ${statusHTML}
+                <div style="font-size:14px; color:#0d6efd;">${q.guideline || ''}</div>
+                <div style="font-weight:bold; margin:10px 0;">${q.text}</div>
+                <div style="color:#6c757d;">나의 답:<br> <span style="display:inline-block; margin-top:5px; padding:10px; background:#f8f9fa; border:1px solid #dee2e6; width:100%; box-sizing:border-box;">${uText}</span></div>
+                ${!correct || isEssayMode || q.type === 'essay' ? `<div style="color:#198754; font-weight:bold; margin-top:10px;">모범 답안:<br> <span style="display:inline-block; margin-top:5px; padding:10px; background:#eaf4fb; border:1px solid #bce8f1; width:100%; box-sizing:border-box; color:#333;">${cText.replace(/\n/g, '<br>')}</span></div>` : ''}
+            `;
+            list.appendChild(item);
+        });
+        
+        document.getElementById('score-display').innerText = `${activeQuizData.length}문항 중 ${score}문항 정답 (${Math.round(score/activeQuizData.length*100)}%)`;
+        document.getElementById('retry-incorrect-btn').style.display = score === activeQuizData.length ? 'none' : 'inline-block';
+    }
+
+    showDashboard();
+</script>
+</body>
+</html>
