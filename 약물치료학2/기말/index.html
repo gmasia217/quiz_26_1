@@ -376,7 +376,7 @@
         { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "감수성결핵 환자에서 치료 시작 시 흉부X선에서 공동이 있고, 치료 ( ) 후 시행한 객담배양이 양성인 경우에는 유지 치료 기간의 연장을 고려할 수 있다.", options: ["1개월", "2개월", "3개월", "4개월"], answer: 1 },
         { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "이소니아지드 단독내성결핵은 이소니아지드 내성이 확인된 시점으로부터 리팜핀, 에탐부톨, 피라진아미드, ( )으로 6개월간 치료한다.", options: ["카바페넴", "레보플록사신", "아미카신", "프로치온아미드"], answer: 1 },
         { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "다제내성결핵 치료 처방에 사용되는 항결핵제 분류에서 Group A에 해당하는 약물은?", options: ["Bedaquiline", "Cycloserine", "Pyrazinamide", "Streptomycin"], answer: 0 },
-        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "리팜핀과 상호작용을 일으킬 수 있는 약제에 대한 설명은?", options: ["항응고제인 와파린을 복용하고 있는 환자에게 리팜핀을 추가하면 와파린의 용량을 감소해야 한다.", "스테로이드와 리팜핀을 같이 사용할 경우 스테로이드의 용량을 증량한다.", "경구피임약을 복용하고 있는 가임 여성이 리팜핀을 복용할 경우 피임에 실패할 위험이 증가하므로 다른 피임 방법을 고려하여야 한다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
+        { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "리팜핀과 상호작용을 일으킬 수 있는 약제에 대한 설명은?", options: ["항응고제인 와파린을 복용하고 있는 환자에게 리팜핀을 추가하면 와파린의 용량을 감소해야 한다.", "스테로이드와 리팜핀을 같이 사용할 경우 스테로이드의 용량을 증량한다.", "경구피임약을 복용하고 있는 가임 여성이 리팜핀을 복용할 경우 피임에 실패할 위험이 증가하므로 다른 피임 방법을 고려하여야 강다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
         { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "재발 결핵의 치료에 대한 설명은?", options: ["과거 감수성결핵의 치료 성공 후 결핵이 재발한 경우 감수성결핵에 준하여 재치료를 시행한다.", "감수성결핵의 치료 성공 후 2년 이내에 재발한 경우 재치료 기간을 3개월 연장하는 것을 권고한다.", "재치료를 시작하면 이소니아지드 및 리팜핀의 내성 여부를 확인할 필요가 없다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 3 },
         { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "결핵 치료 중 부작용이 발생했을 때 대처방법은?", options: ["증상의 유무와 관계없이 혈청 알라닌아미노전달효소 수치가 정상 상한치의 5배 이상 증가한 경우에는 간독성이 의심되는 항결핵제 복용을 즉시 중단해야 한다.", "혈소판이 감소된 경우, 가장 가능성 있는 원인약물은 리팜핀이므로 리팜핀을 중단하고 주기적으로 혈소판 수치를 검사한다.", "에탐부톨에 의한 관절통은 투약을 계속하면서 NSAID를 투여할 수 있으나 통풍이 발생하면 에탐부톨 복용을 중단하여야 한다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 3 },
         { guideline: "[대한결핵 및 호흡기학회 - 2024 결핵진료지침]", text: "임신 및 모유 수유 시 결핵 치료에 대한 설명은?", options: ["결핵 치료 전 가임 여성에 대해 임신 여부 및 임신 계획을 확인한다.", "임신한 결핵환자의 초치료 시 이소니아지드, 리팜핀, 에탐부톨 및 피라진아미드의 표준치료 (2HREZ/4HRE) 또는 이소니아지드, 리팜핀, 에탐부톨 9개월 치료(9HRE)를 권고한다.", "일차 항결핵제로 치료하는 산모는 모유 수유를 중단할 필요가 없으며 산모와 수유부에게 이소니아지드를 사용할 시에는 피리독신을 같이 복용하여야 한다.", "1,2", "2,3", "1,3", "1,2,3"], answer: 6 },
@@ -474,7 +474,6 @@
         return { ...q, text: `${index + 1}. ${cleanText}` };
     });
 
-    // ★ 새롭게 추가: 2026 케이스 스터디
     const caseStudyData2026_raw = [
         { guideline: "[2026 케이스 스터디]", text: "A 57 year old hospitalized patient develops atrial fibrillation (AF) with a rapid ventricular response (heart rate [HR] = 179 bpm). Past medical history is significant for hypertension, angina, and thyrotoxicosis. Symptoms include fatigue and palpitations. Which of the following intravenous medications do you recommend as INITIAL management of the patient’s atrial fibrillation?", options: ["Digoxin to control his ventricular rate", "Esmolol to control his ventricular rate", "Ibutilide to restore sinus rhythm", "Amiodarone to restore sinus rhythm"], answer: 1 },
         { guideline: "[2026 케이스 스터디]", text: "A 19-year-old female with a history of Wolff-Parkinson-White (WPW) syndrome is seen in the ED. No other medical problems nor known heart disease is present. ECG shows atrial fibrillation (HR = 178 beats/min). The patient is hemodynamically stable. Which is the best intravenous medication to administer at this time?", options: ["Adenosine", "Verapamil", "Procainamide", "Lidocaine"], answer: 2 },
@@ -513,8 +512,24 @@
         return { ...q, text: `${index + 1}. ${q.text}` };
     });
 
-    // ★ 기말고사용 퀴즈 목록: 2025 기말 바로 아래에 케이스 스터디 추가됨
+    // ★ 새롭게 추가: 2026 기말 대비 (위 4개 퀴즈 통합)
+    const combinedFinal2026 = [
+        ...finalData2025,
+        ...caseStudyData2026,
+        ...vteData2025,
+        ...finalData2024_no_dup
+    ].map((q, index) => {
+        const cleanText = q.text.replace(/^\d+\.\s*/, '');
+        return { ...q, text: `${index + 1}. ${cleanText}` };
+    });
+
+    // ★ 기말고사용 퀴즈 목록: 2026 기말 대비가 맨 위에 추가됨 (기존 퀴즈는 그대로 유지)
     const quizLibrary = [
+        {
+            id: 'combined_final_2026',
+            title: '2026 기말 대비',
+            data: combinedFinal2026
+        },
         {
             id: 'final_2025',
             title: '2025 약물치료학2 기말고사',
